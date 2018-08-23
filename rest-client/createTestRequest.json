@@ -1,0 +1,32 @@
+{
+  "memberCode": "32722693",
+  "consultationReason": "Abdominal Pain",
+  "consultationDate": "2017-06-09T05:45:26+00:00",
+  "doctorCode": "24744",
+  "hospitalCode": "2716",
+  "primaryDiagnosisCode": "Dx5735",
+
+  "diagnosisTests": [
+    {
+      "diagnosisCode": "Dx5735",
+      "testCode": "DP0000006"
+    },
+    {
+      "diagnosisCode": "Dx5735",
+      "testCode": "DP0000021"
+    },
+    {
+      "diagnosisCode": "Dx5751",
+      "testCode": "DP0000375"
+    }
+  ],
+
+  "attachmentIds": [
+    "109938",
+    "199283"
+  ],
+
+  "requestBy": "32722693",
+  "requestOrigin": "app.member",
+  "requestDeviceId": "b69cd839-6082-4239-bc0c-92bbc7d32ba7"
+}

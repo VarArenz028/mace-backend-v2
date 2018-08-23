@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.ClaimsMapper">
+
+	<!--<cache type="org.mybatis.caches.hazelcast.LoggingHazelcastCache"/>-->
+
+	<resultMap id="utilMap" type="com.basicauth.domain.UtilizationRM">
+		<result column="CONTROL_CODE" property="controlCode" jdbcType="VARCHAR" />
+		<result column="AVAIL_FR" property="availFr" jdbcType="DATE" />
+		<result column="DIAG_DESC" property="diagDesc" jdbcType="VARCHAR" />
+		<result column="DX_REM" property="dxRem" jdbcType="VARCHAR" />
+		<result column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR" />
+		<result column="APPROVED" property="approved" jdbcType="NUMERIC" />
+		<result column="DISAPPROVED" property="disapproved" jdbcType="NUMERIC" />
+		<result column="ADVANCES" property="advances" jdbcType="NUMERIC" />
+		<result column="ERC" property="erc" jdbcType="NUMERIC" />
+		<result column="MEMCODE" property="memCode" jdbcType="VARCHAR" />
+		<result column="REMARKS2" property="remarks2" jdbcType="VARCHAR" />
+		<result column="HOSP_SOA" property="hospSoa" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getMemberUtilization" resultMap="utilMap" statementType="CALLABLE">
+		{CALL [CP_CLMS_REP_UTILIZATION_ALL_EMED]( #{@MemCode, mode=IN, jdbcType=VARCHAR })}
+	</select>
+
+	<select id="getRemainingLimit" resultType="java.lang.Double" statementType="CALLABLE">
+		{CALL [MOSS_REM_LIMIT](#{memberCode, mode=IN, jdbcType=VARCHAR })}
+	</select>
+
+	<resultMap id="RoomPlanMap" type="com.basicauth.data.RoomPlan">
+		<result column="PLAN_CODE" property="planCode" jdbcType="VARCHAR"/>
+		<result column="PLAN_DESC" property="planDesc" jdbcType="VARCHAR"/>
+		<result column="CLASS_CATEGORY" property="classCategory" jdbcType="VARCHAR"/>
+		<result column="MONTHLY_PREMIUM" property="monthlyPremium" jdbcType="NUMERIC"/>
+		<result column="QUARTERLY_PREMIUM" property="quarterlyPremium" jdbcType="NUMERIC"/>
+		<result column="SEMI_ANNUAL_PREMIUM" property="semiAnnualPremium" jdbcType="NUMERIC"/>
+		<result column="ANNUAL_PREMIUM" property="annualPremium" jdbcType="NUMERIC"/>
+		<result column="GRPTYPE" property="grpType" jdbcType="INTEGER"/>
+		<result column="DDL" property="ddl" jdbcType="VARCHAR"/>
+		<result column="W_HOSP" property="wHosp" jdbcType="BOOLEAN"/>
+		<result column="UPDATED_BY" property="updatedBy" jdbcType="VARCHAR"/>
+		<result column="UPDATED_DATE" property="updatedDate" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<select id="getRoomPlans" resultMap="RoomPlanMap" timeout="6000" resultType="java.util.List" useCache="true">
+		SELECT * FROM Claims.dbo.SYS_PLAN_LTBL
+	</select>
+
+	<resultMap id="dentistMap" type="com.basicauth.data.Dentist">
+		<result column="DENTIST_CODE" property="dentistCode" jdbcType="VARCHAR" />
+		<result column="DENTIST_LNAME" property="lastName" jdbcType="VARCHAR" />
+		<result column="DENTIST_FNAME" property="firstName" jdbcType="VARCHAR" />
+		<result column="DENTIST_MNAME" property="middleName" jdbcType="VARCHAR" />
+		<result column="DENTIST_ADD" property="dentistAddress" jdbcType="VARCHAR" />
+		<result column="CONTACT_NO" property="contactNo" jdbcType="VARCHAR" />
+		<result column="SCHEDULE" property="schedule" jdbcType="VARCHAR" />
+		<result column="CLINIC" property="clinic" jdbcType="VARCHAR" />
+		<result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
+		<result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR" />
+		<result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
+		<result column="FAXNO" property="faxNo" jdbcType="VARCHAR" />
+		<result column="OLD_CODE" property="oldCode" jdbcType="VARCHAR" />
+		<result column="Grace_Period" property="gracePeriod" jdbcType="INTEGER" />
+		<result column="EFF_DATE" property="effDate" jdbcType="DATE" />
+		<result column="ISACCREDITED" property="isAccredited" jdbcType="VARCHAR" />
+		<result column="EFF_DATE_RA" property="effDateRa" jdbcType="DATE" />
+		<result column="EFF_DATE_NAP" property="effDateNap" jdbcType="DATE" />
+		<result column="VAT" property="vat" jdbcType="VARCHAR" />
+		<result column="TIN_NO" property="tinNo" jdbcType="VARCHAR" />
+		<result column="TAXABLE" property="taxable" jdbcType="INTEGER" />
+		<result column="WTAX" property="wTax" jdbcType="VARCHAR" />
+		<result column="SPECIAL_REM" property="specialRem" jdbcType="VARCHAR" />
+		<result column="EMAIL_ADD" property="email" jdbcType="VARCHAR" />
+		<result column="OTHER_SPECIALTY" property="otherSpecialty" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remarks" jdbcType="VARCHAR" />
+		<result column="CREATED_DATE" property="createdDate" jdbcType="DATE" />
+		<result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" />
+		<result column="UPDATED_DATE" property="updatedDate" jdbcType="DATE" />
+		<result column="UPDATED_BY" property="updatedBy" jdbcType="VARCHAR" />
+		<result column="withPRC" property="withPRC" jdbcType="BOOLEAN" />
+		<result column="withDiploma" property="withDiploma" jdbcType="BOOLEAN" />
+		<result column="withPermit" property="withPermit" jdbcType="BOOLEAN" />
+		<result column="OLD_DENTIST_CODE" property="oldDentistCode" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getDentist" resultMap="dentistMap" resultType="com.basicauth.data.Dentist">
+		SELECT TOP 1 * FROM Claims.dbo.SYS_DENTIST_MTBL WHERE DENTIST_CODE = #{dentistCode}
+	</select>
+</mapper>

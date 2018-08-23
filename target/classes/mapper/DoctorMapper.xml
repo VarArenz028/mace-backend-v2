@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.DoctorMapper">
+
+
+    <resultMap id="getDoctorTypeMap" type="com.basicauth.data.Doctor">
+
+        <result column="ID" property="docTypeId" jdbcType="INTEGER"/>
+        <result column="DOCTYPE_CODE" property="docTypeCode" jdbcType="VARCHAR"/>
+        <result column="DOCTYPE_DESC" property="docTypeDesc" jdbcType="VARCHAR"/>
+
+
+    </resultMap>
+    <select id="getDoctorType" resultMap="getDoctorTypeMap"
+            resultType="java.util.List">
+        SELECT ID, DOCTYPE_CODE, DOCTYPE_DESC
+        FROM [MACE_CM_DOCTYPE]
+    </select>
+
+    <delete id="delete" flushCache="true">
+        DELETE FROM [MACE_CM_DOCTYPE]
+        WHERE ID =#{docTypeId, jdbcType=INTEGER}
+    </delete>
+
+</mapper>

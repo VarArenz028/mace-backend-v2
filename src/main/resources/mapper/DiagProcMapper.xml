@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.mace.DiagProcMapper">
+
+    <!--<cache type="org.mybatis.caches.hazelcast.LoggingHazelcastCache"/>-->
+
+    <resultMap id="proceduresListMap" type="com.basicauth.data.Procedure">
+        <result column="ProcedureID" property="id" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procedureDesc" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procedureCode" jdbcType="VARCHAR"/>
+        <result column="Amount" property="procedureRate" jdbcType="VARCHAR"/>
+        <result column="Proclass_Code" property="proClassCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ProviderProcMap" type="com.basicauth.data.Procedure">
+        <result column="Procedure_ID" property="id" jdbcType="VARCHAR"/>
+        <result column="Procedure_Desc" property="procedureDesc" jdbcType="VARCHAR"/>
+        <result column="Procedure_Code" property="procedureCode" jdbcType="VARCHAR"/>
+        <result column="Procedure_Rate" property="procedureRate" jdbcType="VARCHAR"/>
+        <result column="Proclass_Code" property="proClassCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="diagnosisListMap" type="com.basicauth.data.Diagnosis">
+        <result column="DIAG_CODE" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="DIAG_DESC" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="DIAG_REMARKS" property="diagRemarks" jdbcType="VARCHAR"/>
+        <result column="DIAG_TYPE" property="type" jdbcType="VARCHAR"/>
+        <result column="DIAG_TYPE_OLD" property="typeOld" jdbcType="VARCHAR"/>
+        <result column="TYPE_DESC" property="typeDesc" jdbcType="VARCHAR"/>
+        <result column="GROUP_DESC" property="groupDesc" jdbcType="VARCHAR"/>
+        <result column="ICD10_CODE" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="ICD10_DESC" property="icd10Desc" jdbcType="VARCHAR"/>
+        <result column="ICD10_4C" property="icd104c" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="addTempDiag">
+        INSERT INTO MACE_TMP_DIAGNOSIS(
+        DiagnosisCode, DiagnosisName, Disease_type, created_by, created_Date
+        )VALUES (
+        #{td.diagCode, jdbcType=VARCHAR},
+        #{td.diagDesc, jdbcType=VARCHAR},
+        #{td.diseaseType, jdbcType=VARCHAR},
+        #{td.createdBy, jdbcType=VARCHAR},
+        #{td.createdOn, jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="addTempProcedure">
+        INSERT INTO MACE_TMP_PROCEDURE(ProcCode, ProcName, ProcAmount, CostCenter, created_by, created_date)
+        VALUES(
+        #{tpm.procCode, jdbcType=VARCHAR},
+        #{tpm.procName, jdbcType=VARCHAR},
+        #{tpm.procAmount, jdbcType=NUMERIC},
+        #{tpm.costCenter, jdbcType=VARCHAR},
+        #{tpm.createdBy, jdbcType=VARCHAR},
+        #{tpm.createdOn, jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <select id="getAllDiagnosisList" resultMap="diagnosisListMap" timeout="6000" resultType="java.util.List"
+            useCache="true">
+        SELECT
+        DIAG_CODE,
+        DIAG_DESC,
+        DIAG_REMARKS,
+        DIAG_TYPE,
+        DIAG_TYPE_OLD,
+        TYPE_DESC,
+        GROUP_DESC,
+        ICD10_CODE,
+        ICD10_DESC,
+        ICD10_4C,
+        STATUS
+        FROM
+        vw_Diagnosis
+        WHERE status = 1
+        --FILTER DIAGNOSIS TYPE – Dental, Exclusion, Maternity, Congental
+        AND TYPE_DESC not in ('DENTAL')
+        --REMOVE DIAGNOSIS which are not applicable
+        AND DIAG_CODE not in ('998','1001','99999','A202','PRE-EMP','ZZZZ','2000','3000','309','5000','Dx6023','Dx6033','Dx6248','Dx3454')
+        --REMOVE DIAGNOSIS For “Consult Only”
+        AND (UPPER(DIAG_REMARKS) not like '%CONSULT%ONLY%' OR DIAG_REMARKS IS NULL)
+        ORDER BY DIAG_DESC DESC
+    </select>
+
+    <select id="getDiagnosisList" resultMap="diagnosisListMap" timeout="6000" resultType="java.util.List"
+            useCache="true">
+        SELECT
+          DIAG_CODE,
+          DIAG_DESC,
+          DIAG_REMARKS,
+          DIAG_TYPE,
+          DIAG_TYPE_OLD,
+          TYPE_DESC,
+          GROUP_DESC,
+          ICD10_CODE,
+          ICD10_DESC,
+          ICD10_4C,
+          STATUS
+        FROM
+          vw_Diagnosis
+        WHERE status = 1
+        --FILTER DIAGNOSIS TYPE – Dental, Exclusion, Maternity, Congental
+        AND TYPE_DESC not in ('DENTAL')
+        --REMOVE DIAGNOSIS which are not applicable
+        AND DIAG_CODE not in ('998','1001','99999','A202','PRE-EMP','ZZZZ','2000','3000','309','5000','Dx6023','Dx6033','Dx6248','Dx3454')
+        --REMOVE DIAGNOSIS For “Consult Only”
+        AND (UPPER(DIAG_REMARKS) not like '%CONSULT%ONLY%' OR DIAG_REMARKS IS NULL)
+        ORDER BY DIAG_DESC DESC
+    </select>
+
+    <select id="getDiagnosisListPaginated" resultMap="diagnosisListMap" timeout="6000" resultType="java.util.List" useCache="true">
+            SELECT
+          DIAG_CODE,
+          DIAG_DESC,
+          DIAG_REMARKS,
+          DIAG_TYPE,
+          DIAG_TYPE_OLD,
+          TYPE_DESC,
+          GROUP_DESC,
+          ICD10_CODE,
+          ICD10_DESC,
+          ICD10_4C,
+          STATUS
+        FROM
+          vw_Diagnosis
+        WHERE status = 1
+        AND (DIAG_DESC LIKE #{searchString} OR ICD10_DESC LIKE #{searchString})
+        --FILTER DIAGNOSIS TYPE – Dental, Exclusion, Maternity, Congental
+        AND TYPE_DESC not in ('DENTAL')
+        --REMOVE DIAGNOSIS which are not applicable
+        AND DIAG_CODE not in ('998','1001','99999','A202','PRE-EMP','ZZZZ','2000','3000','309','5000','Dx6023','Dx6033','Dx6248','Dx3454')
+        --REMOVE DIAGNOSIS For “Consult Only”
+        AND (UPPER(DIAG_REMARKS) not like '%CONSULT%ONLY%' OR DIAG_REMARKS IS NULL)
+        ORDER BY DIAG_DESC DESC
+        OFFSET(#{offset}* #{count})ROWS
+        FETCH NEXT #{count} ROWS ONLY
+    </select>
+
+    <select id="getDiagnosisByDiagnosisCode" resultMap="diagnosisListMap" timeout="6000"
+            resultType="com.basicauth.data.Diagnosis">
+        SELECT TOP 1 * FROM vw_Diagnosis
+        WHERE DIAG_CODE = #{diagCode, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getProcedureByProcedureCode" resultMap="proceduresListMap" timeout="6000"
+            resultType="com.basicauth.data.ProcedureJson">
+        SELECT TOP 1 * FROM vw_Diagnosis_ClinicProcedures
+        WHERE ProcedureID = #{code, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getProcedureByProcedureCodev2" resultMap="ProviderProcMap" timeout="6000"
+            resultType="com.basicauth.data.Procedure">
+        SELECT TOP 1 * FROM SYS_PROCEDURES_LTBL
+        WHERE Procedure_ID = #{code, jdbcType=VARCHAR}
+    </select>
+
+    <resultMap id="testProcObject" type="com.basicauth.domain.TestProcObject">
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procName" jdbcType="VARCHAR"/>
+        <result column="MaceServiceType" property="maceServiceType" jdbcType="VARCHAR"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="CostCenterID" property="costCenterId" jdbcType="INTEGER"/>
+        <result column="CostCenter" property="costCenter" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+        <result column="RUV" property="ruv" jdbcType="VARCHAR"/>
+        <result column="Area" property="area" jdbcType="VARCHAR"/>
+        <result column="Updated_Date" property="updatedDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getTestProcObject" resultMap="testProcObject" resultType="com.basicauth.domain.TestProcObject">
+        SELECT *
+        FROM vw_TestProcedures
+        WHERE ProcedureCode = #{procCode}
+    </select>
+
+    <select id="getAllTestProceduresListByLastUpdateDate" resultMap="testProcObject"  resultType="com.basicauth.domain.TestProcObject" >
+        SELECT *
+        FROM vw_TestProcedures
+        WHERE Updated_Date &gt;= #{date}
+    </select>
+
+    <select id="getTestProceduresListPaginated" resultMap="testProcObject" resultType="com.basicauth.domain.TestProcObject">
+        SELECT *
+        FROM vw_TestProcedures
+        WHERE ProcedureName LIKE #{searchString}
+        <if test="serviceSubType == 2">
+          AND MaceServiceType = 'Basic Test'
+          AND MaceServiceType = 'Test'
+        </if>
+        <if test="serviceSubType == 3">
+          AND MaceServiceType = 'Basic Test'
+        </if>
+        <if test="serviceSubType == 4">
+          AND MaceServiceType = 'Test'
+        </if>
+        <if test="serviceSubType == 5">
+          AND MaceServiceType = 'Procedure'
+        </if>
+        ORDER BY ProcedureName
+        OFFSET (#{offset} * #{count}) ROWS
+        FETCH NEXT #{count} ROWS ONLY
+    </select>
+
+    <resultMap id="diagnosisClinicProcedureEntityMap" type="com.basicauth.data.DiagnosisClinicProceduresEntity">
+        <result column="DiagnosisCode" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="DiagnosisDesc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="ICD1Code" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="ProcedureID" property="procID" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procedureName" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+        <result column="ApprovalID" property="approvalId" jdbcType="INTEGER"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="DiagType" property="diagType" jdbcType="VARCHAR"/>
+        <result column="Diag_Type_Desc" property="diagTypeDesc" jdbcType="VARCHAR"/>
+        <result column="Proclass_Code" property="proClassCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getDiagnosisClinicProcedureEntity" resultMap="diagnosisClinicProcedureEntityMap"
+            resultType="com.basicauth.data.DiagnosisClinicProceduresEntity">
+        SELECT TOP 1 * FROM vw_Diagnosis_ClinicProcedures
+        WHERE DiagnosisCode = #{diagCode} AND ProcedureID = #{procCode}
+    </select>
+
+    <select id="getAllProcedures" resultMap="diagnosisClinicProcedureEntityMap" resultType="java.util.List"
+            useCache="true">
+        SELECT * FROM vw_Diagnosis_ClinicProcedures
+    </select>
+
+    <resultMap id="diagnosticProcedureListMap" type="com.basicauth.data.DiagnosticProcedure">
+        <result column="DIAGPROC_CODE" property="diagProcCode" jdbcType="INTEGER"/>
+        <result column="DIAGPROC_DESC" property="diagProcDesc" jdbcType="VARCHAR"/>
+        <result column="DIAGPROC_GROUP_DESC" property="diagProcGroupDesc" jdbcType="VARCHAR"/>
+        <result column="DIAGPROC_GROUP_CODE" property="diagProcGroupCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--select id="getDiagnosticProceduresList" resultMap="diagnosticProcedureListMap" timeout="6000" resultType="java.util.List">
+        SELECT
+        a.DIAGPROC_CODE,
+        a.DIAGPROC_DESC,
+        b.DIAGPROC_GROUP_DESC,
+        b.DIAGPROC_GROUP_CODE
+        FROM
+        vw_Diagnosis_ClinicProcedures
+    </select-->
+
+    <resultMap id="MaceDiagnosisProcedureMap" type="com.basicauth.data.MaceDiagnosisProcedure">
+        <result column="DiagnosisCode" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="DiagnosisDesc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="ICD1Code" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="ProcedureID" property="procedureId" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procName" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+        <result column="ApprovalID" property="approvalId" jdbcType="VARCHAR"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="DiagType" property="diagType" jdbcType="VARCHAR"/>
+        <result column="Diag_Type_Desc" property="diagTypeDesc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="TestsAndProceduresMap" type="com.basicauth.data.TestAndProceduresEntity">
+        <result column="DiagnosisCode" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="DiagnosisDesc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procDesc" jdbcType="VARCHAR"/>
+        <result column="MaceServiceType" property="maceServiceType" jdbcType="VARCHAR"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="CostCenterID" property="costCenterId" jdbcType="INTEGER"/>
+        <result column="CostCenter" property="costCenter" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <select id="getDiagTestProceduresByCodes" resultMap="TestsAndProceduresMap"
+            resultType="com.basicauth.data.TestAndProceduresEntity">
+        SELECT TOP 1 * FROM vw_Diagnosis_TestProcedures WHERE DiagnosisCode = #{diagCode} AND ProcedureCode = #{procCode}
+    </select>
+
+    <select id="getCostOfTestProc" resultType="java.math.BigDecimal">
+        SELECT TOP 1 Amount FROM vw_Tests
+        WHERE ProcedureCode = #{procCode}
+        UNION
+        SELECT TOP 1 Amount FROM vw_Diagnosis_ClinicProcedures
+        WHERE ProcedureID = #{procCode}
+    </select>
+
+    <select id="getDiagTestsProceduresList" resultMap="TestsAndProceduresMap" resultType="java.util.List"
+            useCache="true">
+        SELECT DISTINCT ProcedureName, ProcedureCode, Amount, MaceServiceType, CostCenter FROM vw_Diagnosis_TestProcedures
+    </select>
+
+    <select id="getDiagTestsProceduresListByHospCode" resultMap="TestsAndProceduresMap" resultType="java.util.List">
+        SELECT DISTINCT A.ProcedureName, A.ProcedureCode, CASE WHEN (A.ApprovalTypeID = 1) THEN 'Basic Test' ELSE 'Test' END AS MaceServiceType, A.CostCenter,
+        CASE WHEN EXISTS(SELECT B.ProcAmount FROM CustHospitalProcedureAmount B WHERE B.ProcCode = A.ProcedureCode AND B.HospitalCode = #{hospCode})
+        THEN (SELECT B.ProcAmount FROM CustHospitalProcedureAmount B WHERE B.ProcCode = A.ProcedureCode AND B.HospitalCode = #{hospCode})
+        ELSE A.Amount END AS Amount
+        FROM vw_Tests A
+        WHERE A.Updated_Date &gt;= #{date}
+        UNION
+        SELECT DISTINCT C.ProcedureName, C.ProcedureCode, C.MaceServiceType, C.CostCenter,
+        C.Amount
+        FROM vw_Diagnosis_TestProcedures C
+        WHERE C.Updated_Date &gt;= #{date}
+        AND C.MaceServiceType = 'Procedure'
+    </select>
+
+    <select id="getTestsOnlyList" resultMap="TestsAndProceduresMap" resultType="java.util.List" useCache="true">
+        SELECT DISTINCT ProcedureName, ProcedureCode, Amount, CASE WHEN ApprovalTypeID = 1
+        THEN 'Basic Test' ELSE 'Test' END AS MaceServiceType, CostCenter FROM vw_Diagnosis_Procedures
+    </select>
+
+    <select id="getAllTestProceduresCodes" resultType="String" useCache="true">
+        SELECT ProcedureCode FROM vw_Tests
+        UNION
+        SELECT DISTINCT ProcedureID as ProcedureCode FROM vw_Diagnosis_ClinicProcedures
+    </select>
+
+    <select id="getTestsOnlyByDiagnosisCode" resultType="String" useCache="true">
+        SELECT DISTINCT ProcedureCode FROM vw_Diagnosis_Procedures
+    </select>
+
+    <select id="getProceduresByDiagnosisCode" resultType="String" useCache="true">
+        SELECT DISTINCT ProcedureID FROM vw_Diagnosis_ClinicProcedures
+        WHERE DiagnosisCode = #{diagCode}
+    </select>
+
+    <select id="getProceduresOnlyByDiagnosisCode" resultType="String" useCache="true">
+        SELECT DISTINCT ProcedureID FROM vw_Diagnosis_ClinicProcedures
+    </select>
+
+    <select id="getTestsProceduresCodesByDiagnosisCode" resultType="String">
+        SELECT ProcedureCode FROM vw_Diagnosis_TestProcedures
+        WHERE DiagnosisCode = #{diagCode}
+    </select>
+
+    <select id="getAllProcedureCodesByDiagnosisCode" resultType="String">
+        SELECT ProcedureCode FROM vw_Diagnosis_ClinicProcedures
+        WHERE DiagnosisCode = #{diagCode}
+    </select>
+
+    <select id="getAllProceduresCodes" resultType="String">
+        SELECT ProcedureID FROM vw_Diagnosis_ClinicProcedures
+    </select>
+
+    <select id="checkIfDiagCodeAndProcedureCodeMatches" resultType="java.lang.Boolean">
+        SELECT CASE WHEN EXISTS(
+        SELECT *
+        FROM
+        vw_Diagnosis_TestProcedures
+        WHERE
+        DiagnosisCode = #{diagCode, jdbcType=VARCHAR}
+        and ProcedureCode = #{procedureCode, jdbcType=VARCHAR})
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END
+    </select>
+
+    <select id="getTestsByDiagnosisCode" resultType="string">
+        SELECT ProcedureCode FROM vw_Diagnosis_Procedures WHERE DiagnosisCode = #{diagCode}
+        ORDER BY ProcedureDesc ASC
+    </select>
+
+    <select id="getOtherTestsNotByDiagCode" resultType="string">
+        SELECT DISTINCT ProcedureCode FROM vw_Diagnosis_Procedures WHERE DiagnosisCode != #{diagCode}
+        ORDER BY ProcedureDesc ASC
+    </select>
+
+    <!-- Transferred from MaceMapper -->
+    <resultMap id="proceduresMap" type="com.basicauth.data.ProcedureJson">
+        <result column="Procedure_ID" property="id" jdbcType="INTEGER"/>
+        <result column="Procedure_Rate" property="procedureAmount" jdbcType="NUMERIC"/>
+        <result column="Procedure_Code" property="procedureCode" jdbcType="VARCHAR"/>
+        <result column="Procedure_Desc" property="procedureDesc" jdbcType="VARCHAR"/>
+        <result column="Procedure_Class" property="serviceClassCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="testsMap" type="com.basicauth.data.DiagnosisProceduresViewEntity">
+        <result column="DiagnosisCode" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="DiagnosisDesc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="ICD10Code" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procedureName" jdbcType="VARCHAR"/>
+        <result column="ApprovalTypeID" property="approvalId" jdbcType="INTEGER"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+        <result column="CostCenterID" property="costCenterID" jdbcType="INTEGER"/>
+        <result column="CostCenter" property="costCenter" jdbcType="VARCHAR"/>
+        <result column="ProcedureGroupId" property="procedureGroupId" jdbcType="INTEGER"/>
+        <result column="ProcedureGroup" property="procedureGroup" jdbcType="VARCHAR"/>
+        <result column="active" property="active" jdbcType="BIT"/>
+    </resultMap>
+
+    <select id="getDiagnosisProcedureList" resultMap="testsMap" resultType="java.util.List">
+        SELECT * FROM vw_Diagnosis_Procedures
+    </select>
+
+    <select id="getBasicTests" resultMap="testsMap" resultType="java.util.List" useCache="true">
+        SELECT DISTINCT ProcedureCode, ProcedureName, Amount FROM vw_Diagnosis_Procedures
+        WHERE ApprovalType = 'Auto'
+    </select>
+
+    <select id="getOtherTests" resultMap="testsMap" resultType="java.util.List" useCache="true">
+        SELECT DISTINCT ProcedureCode, ProcedureName, Amount FROM vw_Diagnosis_Procedures
+        WHERE ApprovalType != 'Auto'
+    </select>
+
+    <select id="getAllTests" resultMap="testsMap" resultType="java.util.List" useCache="true">
+        SELECT DISTINCT ProcedureCode, ProcedureName, Amount FROM vw_Tests
+    </select>
+
+    <select id="getProceduresList" resultMap="proceduresMap" resultType="java.util.List" useCache="true">
+        SELECT [Procedure_ID]
+        ,[Procedure_Code]
+        ,[Procedure_Class]
+        ,[Procedure_Desc]
+        ,[Procedure_Rate]
+        FROM vw_Clinic_Procedures
+    </select>
+
+    <!--select id="getProcedureByProcedureCode" resultMap="proceduresMap" resultType="com.basicauth.data.ProcedureJson">
+        SELECT * FROM PROCEDURES
+        WHERE PROCCODE = #{code, jdbcType=VARCHAR}
+    </select-->
+
+    <resultMap id="diagnosticProcedureMap" type="com.basicauth.data.DiagnosticProceduresEntity">
+        <result column="DiagnosisCode" property="dxCode" jdbcType="VARCHAR"/>
+        <result column="DiagnosisDesc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="ICD10Code" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procedureName" jdbcType="VARCHAR"/>
+        <result column="ProcedureDesc" property="procedureDesc" jdbcType="VARCHAR"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+        <result column="costcenter_id" property="costcenterId" jdbcType="INTEGER"/>
+        <result column="CostCenter" property="costCenter" jdbcType="VARCHAR"/>
+        <result column="ProcedureGroup" property="procedureGroup" jdbcType="VARCHAR"/>
+        <result column="Amount" property="amount" jdbcType="NUMERIC"/>
+        <result column="Active" property="active" jdbcType="BIT"/>
+    </resultMap>
+
+    <select id="getDiagProcedureByProcedureCode" resultMap="diagnosticProcedureMap"
+            resultType="com.basicauth.data.DiagnosticProceduresEntity">
+        SELECT * FROM vw_Diagnosis_Procedures
+        WHERE ProcedureCode = #{procCode, jdbcType=VARCHAR} AND DiagnosisCode = #{dxCode, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getCostCenterByMRTTransactionId" resultType="string">
+        SELECT TOP 1 CostCenter FROM vw_Tests
+        WHERE ProcedureCode = (SELECT TOP 1 PROC_CODE FROM MACE_REQ_OP_TESTS
+        WHERE TRANSACTION_ID = #{transId})
+    </select>
+
+    <select id="getCostCenterByMRPTransactionId" resultType="string">
+        SELECT TOP 1 CostCenter FROM vw_Diagnosis_TestProcedures
+        WHERE ProcedureCode = (SELECT TOP 1 PROC_CODE FROM MACE_REQ_OP_PROCEDURE
+        WHERE TRANSACTION_ID = #{transId})
+    </select>
+    <select id="getAllDiagnosisListByLastUpdateDate" resultMap="diagnosisListMap" timeout="6000"
+            resultType="java.util.List" useCache="true">
+        SELECT
+        DIAG_CODE,
+        DIAG_DESC,
+        DIAG_REMARKS,
+        DIAG_TYPE,
+        DIAG_TYPE_OLD,
+        TYPE_DESC,
+        GROUP_DESC,
+        ICD10_CODE,
+        ICD10_DESC,
+        ICD10_4C,
+        STATUS
+        FROM
+        vw_Diagnosis
+        WHERE status = 1
+        --FILTER DIAGNOSIS TYPE – Dental, Exclusion, Maternity, Congental
+        AND TYPE_DESC not in ('DENTAL')
+        --REMOVE DIAGNOSIS which are not applicable
+        AND DIAG_CODE not in ('998','1001','99999','A202','PRE-EMP','ZZZZ','2000','3000','309','5000','Dx6023','Dx6033','Dx6248','Dx3454')
+        --REMOVE DIAGNOSIS For “Consult Only”
+        AND (UPPER(DIAG_REMARKS) not like '%CONSULT%ONLY%' OR DIAG_REMARKS IS NULL)
+        AND UPDATED_DATE &gt;= #{date}
+        ORDER BY DIAG_DESC DESC
+    </select>
+
+    <resultMap id="CustHospProcMap" type="com.basicauth.data.CustHospProcAmount">
+        <result column="HospitalCode" property="hospitalCode" jdbcType="VARCHAR"/>
+        <result column="ProcAmount" property="procAmount" jdbcType="NUMERIC"/>
+        <result column="UpdatedBy" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="UpdatedDate" property="updatedDate" jdbcType="DATE"/>
+        <result column="ProcCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="rec_id" property="recId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getCustHospProcAmount" resultType="com.basicauth.data.CustHospProcAmount">
+        SELECT TOP 1 * FROM CustHospitalProcedureAmount
+        WHERE HospitalCode = #{hospCode, jdbcType=VARCHAR}
+        AND ProcCode = #{procCode, jdbcType=VARCHAR}
+    </select>
+    <select id="findTempDiag" resultType="com.basicauth.data.TempDiagModel">
+        SELECT TOP 1 * FROM MACE_TMP_DIAGNOSIS
+        WHERE DiagnosisCode = #{diagCode}
+    </select>
+    <select id="findTempProc" resultType="com.basicauth.data.TempProcModel">
+        SELECT TOP 1 * FROM MACE_TMP_PROCEDURE
+        WHERE ProcName = #{procName}
+    </select>
+</mapper>

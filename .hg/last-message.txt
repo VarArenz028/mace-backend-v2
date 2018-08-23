@@ -1,0 +1,5 @@
+1. New Branch added
+2 Rest Controller for Doctor-type added
+3. DoctorMapper for Doctor-type added
+4. Doctor service for Doctor-type added
+5. Domain Doctor added DocTypeId, DocTypeCode and DocTypeDesc

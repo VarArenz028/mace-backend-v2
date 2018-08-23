@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.RoomMapper">
+
+    <resultMap id="getRoomTypeMap" type="com.basicauth.domain.Room">
+        <result column="PLAN_CODE" property="PlanCode" jdbcType="INTEGER"/>
+        <result column="PLAN_DESC" property="PlanDesc" jdbcType="VARCHAR"/>
+        <result column="RATE_AMOUNT" property="RateAmount" jdbcType="DECIMAL"/>
+        <result column="RUV_MULTIPLIER" property="RuvMultiplier" jdbcType="DECIMAL"/>
+    </resultMap>
+    <select id="getRoomType" resultMap="getRoomTypeMap"
+            resultType="java.util.List">
+        SELECT PLAN_CODE, PLAN_DESC, RATE_AMOUNT, RUV_MULTIPLIER
+        FROM SYS_PLANS_LTBL
+        ORDER BY PLAN_DESC
+    </select>
+
+</mapper>

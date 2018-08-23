@@ -1,0 +1,8 @@
+syntax: glob
+target/*
+*.iml
+.idea/*
+*.tlog
+*.class
+.gitignore
+*.orig

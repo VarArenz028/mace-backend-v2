@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.HistoryMapper">
+
+
+	<insert id="addToLoaHistory" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+		INSERT INTO [SYS_CUST_CARE_LTBL_HIST]
+		([BATCH_CODE]
+		,[CALLER_ID]
+		,[MEMBER_CODE]
+		,[TYPE]
+		,[ROOM]
+		,[DATE_ADMITTED]
+		,[DIAGNOSIS]
+		,[PROCEDURE_DESC]
+		,[PROCEDURE_AMT]
+		,[ACTION_TAKEN]
+		,[APPROVAL_NO]
+		,[UPDATED_BY]
+		,[UPDATED_DATE]
+		,[REMARKS]
+		,[RUNNING_BILL]
+		,[NOTES]
+		,[REASON]
+		,[CATEGORY]
+		,[CLASSIFICATION]
+		,[MEM_LNAME]
+		,[MEM_FNAME]
+		)
+		VALUES
+		(#{c.batchCode, jdbcType=VARCHAR}
+		,#{c.callerId, jdbcType=VARCHAR}
+		,#{c.memberCode, jdbcType=VARCHAR}
+		,#{c.type, jdbcType=INTEGER}
+		,#{c.room, jdbcType=VARCHAR}
+		,#{c.dateAdmitted, jdbcType=TIMESTAMP}
+		,#{c.diagnosis, jdbcType=VARCHAR}
+		,#{c.procedureDesc, jdbcType=VARCHAR}
+		,#{c.procedureAmount, jdbcType=NUMERIC}
+		,#{c.actionTaken, jdbcType=INTEGER}
+		,#{c.approvalNo, jdbcType=VARCHAR}
+		,#{c.updatedBy, jdbcType=VARCHAR}
+		,#{c.updatedDate, jdbcType=TIMESTAMP}
+		,#{c.remarks, jdbcType=VARCHAR}
+		,#{c.runningBill, jdbcType=NUMERIC}
+		,#{c.notes, jdbcType=VARCHAR}
+		,#{c.reason, jdbcType=VARCHAR}
+		,#{c.category, jdbcType=VARCHAR}
+		,#{c.classification, jdbcType=INTEGER}
+		,#{c.memLname, jdbcType=VARCHAR}
+		,#{c.memFname, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="addToLoaLTBLHistory" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+		INSERT INTO [SYS_CUST_CARE_MTBL_hist]
+        ([CALLER_ID]
+        ,[START_TIME]
+        ,[END_TIME]
+        ,[CALL_TYPE_ID]
+        ,[CALL_DATE]
+        ,[UPDATED_BY]
+        ,[UPDATED_DATE]
+        ,[HOSPITAL_CODE]
+        ,[REMARKS]
+        ,[CALLER]
+        )
+        VALUES
+        (#{c.callerId, jdbcType=VARCHAR}
+        ,#{c.startTime, jdbcType=TIMESTAMP}
+        ,#{c.endTime, jdbcType=TIMESTAMP}
+        ,#{c.callTypeId, jdbcType=INTEGER}
+        ,#{c.callDate, jdbcType=TIMESTAMP}
+        ,#{c.updatedBy, jdbcType=VARCHAR}
+        ,#{c.updatedDate, jdbcType=TIMESTAMP}
+        ,#{c.hospitalCode, jdbcType=VARCHAR}
+        ,#{c.deviceId, jdbcType=VARCHAR}
+        ,#{c.caller, jdbcType=VARCHAR}
+        )
+	</insert>
+
+	<insert id="addToLoaPFHistory" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+		INSERT INTO [SYS_CUST_CARE_PF_HIST]
+		([PF_CODE]
+		,[BATCH_CODE]
+		,[DOCTOR]
+		,[SPECIALIZATION]
+		,[ACCREDITED]
+		)
+		VALUES
+		(#{c.doctorCode, jdbcType=VARCHAR}
+		,#{c.batchCode, jdbcType=VARCHAR}
+		,#{c.doctorCode, jdbcType=VARCHAR}
+		,#{c.specialization, jdbcType=VARCHAR}
+		,#{c.accredited, jdbcType=INTEGER}
+		)
+	</insert>
+</mapper>

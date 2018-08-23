@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.mace.DocHospMapper">
+
+    <!--<cache type="org.mybatis.caches.hazelcast.LoggingHazelcastCache"/>-->
+
+    <select id="getCostCenterByHospitalCode" resultType="string">
+		SELECT
+		COST_CENTER
+		FROM
+		vw_Hospitals
+		WHERE
+		HOSPITAL_CODE = #{hospitalCode}
+	</select>
+
+    <resultMap id="HospitalProcedureAmountMap" type="com.basicauth.domain.HospitalProcedureAmountView">
+        <result column="ProcCode" property="procedureCode" jdbcType="VARCHAR"/>
+        <result column="ProcedureName" property="procedureName" jdbcType="VARCHAR"/>
+        <result column="HospitalCode" property="hospitalCode" jdbcType="VARCHAR"/>
+        <result column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+        <result column="HospAmt" property="hospAmount" jdbcType="NUMERIC"/>
+        <result column="DefaultAmt" property="defaultAmount" jdbcType="NUMERIC"/>
+        <result column="CostCenterDesc" property="CostCenter" jdbcType="VARCHAR"/>
+        <result column="ApprovalType" property="approvalType" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getHospProcAmount" resultMap="HospitalProcedureAmountMap"
+            resultType="com.basicauth.domain.HospitalProcedureAmountView">
+		SELECT TOP 1 * FROM vw_HospitalProcedureAmount
+		WHERE hospitalCode = #{hospitalCode}
+		AND procCode = #{procedureCode}
+	</select>
+
+    <select id="getHospProcListByHospital" resultMap="HospitalProcedureAmountMap" resultType="java.util.List">
+		SELECT * FROM vw_HospitalProcedureAmount
+		WHERE HospitalCode = #{hospitalCode}
+	</select>
+
+    <select id="getProcAmountByHospitalCode" resultType="java.lang.Double">
+
+    </select>
+
+    <resultMap id="hospitalMap" type="com.basicauth.data.Hospital">
+        <result column="ALIAS" property="alias" jdbcType="VARCHAR"/>
+        <result column="CATEGORY" property="category" jdbcType="VARCHAR"/>
+        <result column="COORDINATOR" property="coordinator" jdbcType="VARCHAR"/>
+        <result column="HOSPITAL_CODE" property="hospitalCode" jdbcType="VARCHAR"/>
+        <result column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+        <result column="KEYWORD" property="keyword" jdbcType="VARCHAR"/>
+        <result column="STREET" property="streetAddress" jdbcType="VARCHAR"/>
+        <result column="CITY_NAME" property="city" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_NAME" property="province" jdbcType="VARCHAR"/>
+        <result column="REGION_DESC" property="region" jdbcType="VARCHAR"/>
+        <result column="FAXNO" property="faxno" jdbcType="VARCHAR"/>
+        <result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR"/>
+        <result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR"/>
+        <result column="ISACCREDITED" property="isAccredited" jdbcType="BOOLEAN"/>
+        <result column="MPI_CLINIC_CATEGORY" property="mpiClinicCategory" jdbcType="VARCHAR"/>
+        <result column="IS_MPICLINIC" property="isMpiClinic" jdbcType="BOOLEAN"/>
+        <result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR"/>
+        <result column="UPDATED_DATE" property="updatedDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getHospitalsPaginated" resultMap="hospitalMap" resultType="java.util.List" useCache="true">
+        <if test="isMediCardHosp">
+            SELECT * FROM vw_Hospitals
+            WHERE HOSPITAL_NAME LIKE #{searchString}
+            AND (HOSPITAL_NAME LIKE '%MEDICARD PHILIPPINES, INC.%'
+            OR HOSPITAL_NAME LIKE '%MEDICard LIFESTYLE CENTER%')
+            AND HOSPITAL_NAME NOT LIKE '%referral%'
+            <if test="provinceList != null and !provinceList.isEmpty()">
+                AND PROVINCE_NAME IN
+                <foreach item="item" index="index" collection="provinceList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="cityList != null and !cityList.isEmpty()">
+                AND CITY_NAME IN
+                <foreach item="item" index="index" collection="cityList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="sortBy == 1">
+                ORDER BY HOSPITAL_NAME
+            </if>
+            <if test="sortBy == 2">
+                ORDER BY PROVINCE_NAME
+            </if>
+            <if test="sortBy == 3">
+                ORDER BY CITY_NAME
+            </if>
+        </if>
+
+        <if test="!isMediCardHosp">
+            SELECT *, 0 ORDER_NUMBER FROM vw_Hospitals
+            WHERE HOSPITAL_NAME LIKE #{searchString}
+            AND (HOSPITAL_NAME LIKE '%MEDICARD PHILIPPINES, INC.%'
+            OR HOSPITAL_NAME LIKE '%MEDICard LIFESTYLE CENTER%')
+            AND HOSPITAL_NAME NOT LIKE '%referral%'
+            <if test="provinceList != null and !provinceList.isEmpty()">
+                AND PROVINCE_NAME IN
+                <foreach item="item" index="index" collection="provinceList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="cityList != null and !cityList.isEmpty()">
+                AND CITY_NAME IN
+                <foreach item="item" index="index" collection="cityList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            UNION
+            SELECT *, 1 ORDER_NUMBER FROM vw_Hospitals
+            WHERE HOSPITAL_NAME LIKE #{searchString}
+            AND HOSPITAL_NAME != ''
+            AND HOSPITAL_NAME NOT LIKE '%MEDICARD PHILIPPINES, INC.%'
+            AND HOSPITAL_NAME NOT LIKE '%MEDICard LIFESTYLE CENTER%'
+            AND HOSPITAL_NAME NOT LIKE '%referral%'
+            <if test="provinceList != null and !provinceList.isEmpty()">
+                AND PROVINCE_NAME IN
+                <foreach item="item" index="index" collection="provinceList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="cityList != null and !cityList.isEmpty()">
+                AND CITY_NAME IN
+                <foreach item="item" index="index" collection="cityList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+
+            <if test="sortBy == 1">
+                ORDER BY ORDER_NUMBER ,HOSPITAL_NAME
+            </if>
+            <if test="sortBy == 2">
+                ORDER BY ORDER_NUMBER ,PROVINCE_NAME
+            </if>
+            <if test="sortBy == 3">
+                ORDER BY ORDER_NUMBER ,CITY_NAME
+            </if>
+        </if>
+
+        OFFSET(#{offset}* #{count})ROWS
+        FETCH NEXT #{count} ROWS ONLY
+    </select>
+
+
+    <select id="getHospitals" resultMap="hospitalMap" resultType="java.util.List" useCache="true">
+		SELECT * FROM vw_Hospitals
+		/*SELECT A.HOSPITAL_CODE, A.HOSPITAL_NAME, A.KEYWORD, A.ALIAS, a.CATEGORY , A.COORDINATOR, A.STREET
+		,C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+		,A.FAXNO,A.PHONE_NO
+		,A.CONTACT_PERSON
+		FROM SYS_HOSPITALS_LTBL A
+		LEFT JOIN SYS_CITY_LTBL as C ON A.CITY_CODE = C.CITY_CODE
+		LEFT JOIN SYS_PROVINCE_LTBL as D ON A.PROVINCE_CODE = D.PROVINCE_CODE
+		LEFT JOIN SYS_REGION_LTBL as E ON A.REGION_CODE = E.REGION_CODE
+		WHERE
+		A.REMARKS NOT LIKE 'FOR PGI%'
+		AND (A.SPECIAL_REM IS NULL OR A.SPECIAL_REM = '')
+		AND A.ISACCREDITED = 'True'
+		AND (A.EFF_DATE_NAP is null OR A.eff_date_nap = '1900-01-01 00:00:00.000')
+		ORDER BY HOSPITAL_NAME*/
+	</select>
+
+    <resultMap id="doctorMap" type="com.basicauth.data.Doctor">
+        <result column="DOCTOR_CODE" property="doctorCode" jdbcType="VARCHAR"/>
+        <result column="DOC_LNAME" property="docLname" jdbcType="VARCHAR"/>
+        <result column="DOC_FNAME" property="docFname" jdbcType="VARCHAR"/>
+        <result column="DOC_MNAME" property="docMname" jdbcType="VARCHAR"/>
+        <result column="SPEC_DESC" property="specDesc" jdbcType="VARCHAR"/>
+        <result column="SPEC_CODE" property="specCode" jdbcType="VARCHAR"/>
+        <result column="WTAX" property="wtax" jdbcType="VARCHAR"/>
+        <result column="GRACE_PERIOD" property="gracePeriod" jdbcType="INTEGER"/>
+        <result column="VAT" property="vat" jdbcType="VARCHAR"/>
+        <result column="CONTACT_NO" property="contactNumber" jdbcType="VARCHAR"/>
+        <result column="STREET" property="streetAddress" jdbcType="VARCHAR"/>
+        <result column="CITY_NAME" property="city" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_NAME" property="province" jdbcType="VARCHAR"/>
+        <result column="REGION_DESC" property="region" jdbcType="VARCHAR"/>
+        <result column="PRC_NO" property="prc" jdbcType="VARCHAR"/>
+        <result column="ROOM_NO" property="roomNo" jdbcType="VARCHAR"/>
+        <result column="SCHEDULE" property="schedule" jdbcType="VARCHAR"/>
+        <result column="SCHEDULE" property="schedule" jdbcType="VARCHAR"/>
+
+
+    </resultMap>
+
+    <select id="getDoctors" resultMap="doctorMap" timeout="6000" resultType="java.util.List" useCache="true">
+		SELECT  *   a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME,
+		CASE WHEN (a.DOC_MNAME IS NULL) THEN '' ELSE a.DOC_MNAME end as DOC_MNAME
+		,a.SPEC_CODE, B.SPEC_DESC,  a.WTAX, a.GRACE_PERIOD, a.VAT, a.CONTACT_NO
+		,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+		,a.PRC_NO
+		FROM        SYS_DOCTOR_LTBL AS a
+		LEFT JOIN SYS_SPECIALIZATION_LTBL AS B ON a.SPEC_CODE = B.SPEC_CODE
+		LEFT JOIN SYS_CITY_LTBL as C ON a.CITY_CODE = C.CITY_CODE
+		LEFT JOIN SYS_PROVINCE_LTBL as D ON a.PROVINCE_CODE = D.PROVINCE_CODE
+		LEFT JOIN SYS_REGION_LTBL as E ON a.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+	</select>
+
+    <resultMap id="doctorToHospitalListMap" type="com.basicauth.data.DoctorToHospital">
+        <result column="DOCTOR_CODE" property="doctorCode" jdbcType="VARCHAR"/>
+        <result column="DOC_LNAME" property="docLname" jdbcType="VARCHAR"/>
+        <result column="DOC_FNAME" property="docFname" jdbcType="VARCHAR"/>
+        <result column="DOC_MNAME" property="docMname" jdbcType="VARCHAR"/>
+        <result column="DOC_HOSP_ID" property="docHospId" jdbcType="INTEGER"/>
+        <result column="HOSPITAL_CODE" property="hospitalCode" jdbcType="VARCHAR"/>
+        <result column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+        <result column="SPEC_DESC" property="specDesc" jdbcType="VARCHAR"/>
+        <result column="SPEC_CODE" property="specCode" jdbcType="VARCHAR"/>
+        <result column="SCHEDULE" property="schedule" jdbcType="VARCHAR"/>
+        <result column="ROOM" property="room" jdbcType="VARCHAR"/>
+        <result column="WTAX" property="wtax" jdbcType="VARCHAR"/>
+        <result column="GRACE_PERIOD" property="gracePeriod" jdbcType="INTEGER"/>
+        <result column="VAT" property="vat" jdbcType="VARCHAR"/>
+        <result column="SPECIAL_REM" property="specialRem" jdbcType="VARCHAR"/>
+        <result column="Hosp_Remarks" property="hospRemarks" jdbcType="VARCHAR"/>
+        <result column="ROOM_BOARD" property="roomBoard" jdbcType="VARCHAR"/>
+        <result column="REMARKS" property="remarks" jdbcType="VARCHAR"/>
+        <result column="REMARKS_2" property="remarks2" jdbcType="VARCHAR"/>
+        <result column="STREET" property="streetAddress" jdbcType="VARCHAR"/>
+        <result column="CITY_NAME" property="city" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_NAME" property="province" jdbcType="VARCHAR"/>
+        <result column="REGION_DESC" property="region" jdbcType="VARCHAR"/>
+        <result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR"/>
+        <result column="FAXNO" property="faxno" jdbcType="VARCHAR"/>
+        <result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR"/>
+        <result column="ISACCREDITED" property="isAccredited" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getDoctorsToHospital" resultMap="doctorToHospitalListMap" timeout="6000" resultType="java.util.List"
+            useCache="true">
+        SELECT
+        <if test="hospitalCode == null">
+            TOP 100
+        </if>
+        a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+        ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+        ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+        LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+        WHERE (a.ISACCREDITED = 'TRUE')
+        AND CC.HOSPITAL_CODE = ISNULL(#{hospitalCode},CC.HOSPITAL_CODE)
+        AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+        AND (CC.ISACCREDITED = 'TRUE')
+        --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+        AND CC.REMARKS NOT LIKE 'FOR PGI%'
+        AND AA.EFF_DATE_NAP is null
+        ORDER BY CC.HOSPITAL_NAME, a.DOCTOR_CODE
+    </select>
+
+
+    <select id="getDoctorsToHospitalV2" resultMap="doctorToHospitalListMap" timeout="6000" resultType="java.util.List"
+            useCache="true">
+        SELECT
+        <if test="hospCode == null">
+            TOP 100
+        </if>
+        a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+        ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+        ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+        LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+        WHERE (a.ISACCREDITED = 'TRUE')
+        AND (a.CREATED_DATE &gt;= #{lastUpdateDate}
+        OR a.UPDATED_DATE &gt;= #{lastUpdateDate})
+        AND CC.HOSPITAL_CODE = ISNULL(#{hospCode},CC.HOSPITAL_CODE)
+        AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+        AND (CC.ISACCREDITED = 'TRUE')
+        --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+        AND CC.REMARKS NOT LIKE 'FOR PGI%'
+        AND AA.EFF_DATE_NAP is null
+        ORDER BY CC.HOSPITAL_NAME, a.DOCTOR_CODE
+    </select>
+
+
+    <select id="getDoctorsHospitalListByLastUpdateDate" resultMap="doctorToHospitalListMap" timeout="6000"
+            resultType="java.util.List" useCache="true">
+        SELECT
+        <if test="hospCode == null">
+            TOP 100
+        </if>
+        a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+        ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+        ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+        LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+        WHERE (a.ISACCREDITED = 'TRUE')
+        <if test="lastUpdateDate != null">
+            AND (a.CREATED_DATE &gt;= #{lastUpdateDate}
+            OR a.UPDATED_DATE &gt;= #{lastUpdateDate})
+        </if>
+        AND CC.HOSPITAL_CODE = ISNULL(#{hospCode},CC.HOSPITAL_CODE)
+        AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+        AND (CC.ISACCREDITED = 'TRUE')
+        --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+        AND CC.REMARKS NOT LIKE 'FOR PGI%'
+        AND AA.EFF_DATE_NAP is null
+        ORDER BY CC.HOSPITAL_NAME, a.DOCTOR_CODE
+    </select>
+
+
+    <select id="getDoctorToHospitalObject" resultMap="doctorToHospitalListMap"
+            resultType="com.basicauth.data.DoctorToHospital">
+        SELECT TOP 1 a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME,
+        AA.DOC_HOSP_ID
+        ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+        ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+        LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+        WHERE
+        <if test="getUnaccreditedDoctors">
+            1 = 1
+        </if>
+        <if test="!getUnaccreditedDoctors">
+            (a.ISACCREDITED = 'TRUE')
+        </if>
+        AND AA.DOCTOR_CODE = ISNULL(#{doctorCode}, AA.DOCTOR_CODE)
+        AND CC.HOSPITAL_CODE = ISNULL(#{hospitalCode},CC.HOSPITAL_CODE)
+        AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+        AND (CC.ISACCREDITED = 'TRUE')
+        --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+        AND CC.REMARKS NOT LIKE 'FOR PGI%'
+        AND AA.EFF_DATE_NAP is null
+    </select>
+
+    <select id="getAllDoctorsToHospital" resultMap="doctorToHospitalListMap" timeout="10000" useCache="true"
+            resultType="java.util.List">
+        SELECT a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+                      ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+                      ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+					  ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+					  ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+		FROM         SYS_DOCTOR_LTBL AS a
+					LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+					LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+					LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+					LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+					LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+					LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+			  AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+			  AND (CC.ISACCREDITED = 'TRUE')
+			  --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+			  AND CC.REMARKS NOT LIKE 'FOR PGI%'
+			  AND AA.EFF_DATE_NAP is null
+		ORDER BY a.DOC_LNAME,CC.HOSPITAL_NAME, a.DOCTOR_CODE
+	</select>
+
+    <select id="getAllDoctorsToHospitalByName" resultMap="doctorToHospitalListMap" timeout="10000"
+            resultType="java.util.List">
+		SELECT TOP (#{max}) a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+		,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+		,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+		,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+		,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+		FROM SYS_DOCTOR_LTBL AS a
+		LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+		LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+		LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+		LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+		LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+		LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+		AND BB.SPEC_DESC LIKE #{partialDoctorName}
+		AND a.DOC_FNAME LIKE #{partialDoctorName} OR a.DOC_LNAME LIKE #{partialDoctorName} OR BB.SPEC_DESC LIKE #{partialDoctorName}
+		OR CC.HOSPITAL_NAME LIKE #{partialDoctorName}
+		AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+		AND (CC.ISACCREDITED = 'TRUE')
+		AND CC.REMARKS NOT LIKE 'FOR PGI%'
+		AND AA.EFF_DATE_NAP is null
+		ORDER BY a.DOC_LNAME,CC.HOSPITAL_NAME, a.DOCTOR_CODE
+	</select>
+
+    <select id="getHospital" resultMap="hospitalMap" useCache="true">
+		SELECT TOP 1 * FROM vw_Hospitals
+		WHERE HOSPITAL_CODE = #{hospitalCode}
+	</select>
+
+    <select id="getDoctor" resultMap="doctorMap" resultType="com.basicauth.data.Doctor" useCache="true">
+        SELECT TOP 1 a.DOCTOR_CODE,
+        a.DOC_LNAME, a.DOC_FNAME,
+        CASE WHEN (a.DOC_MNAME IS NULL) THEN '' ELSE a.DOC_MNAME end as DOC_MNAME
+        ,a.SPEC_CODE, B.SPEC_DESC, a.WTAX, a.GRACE_PERIOD, a.VAT, a.CONTACT_NO
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,a.PRC_NO
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS B ON a.SPEC_CODE = B.SPEC_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON a.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON a.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON a.REGION_CODE = E.REGION_CODE
+        WHERE
+        <if test="getUnaccreditedDoctors">
+            1 = 1
+        </if>
+        <if test="!getUnaccreditedDoctors">
+            (a.ISACCREDITED = 'TRUE')
+        </if>
+        AND a.DOCTOR_CODE = #{doctorCode}
+    </select>
+
+    <resultMap id="regionMap" type="com.basicauth.data.Region">
+        <result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR"/>
+        <result column="REGION_NAME" property="regionName" jdbcType="VARCHAR"/>
+        <result column="REGION_DESC" property="regionDesc" jdbcType="VARCHAR"/>
+        <result column="COUNTRY_CODE" property="countryCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getRegions" resultMap="regionMap" resultType="java.util.List" useCache="true">
+		SELECT
+			REGION_CODE,
+			REGION_NAME,
+			REGION_DESC,
+			COUNTRY_CODE
+		FROM
+			[SYS_REGION_LTBL]
+	</select>
+
+    <resultMap id="provinceMap" type="com.basicauth.data.Province">
+        <result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR"/>
+        <result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getProvinces" resultMap="provinceMap" resultType="java.util.List" useCache="true">
+		SELECT
+			PROVINCE_CODE,
+			PROVINCE_NAME,
+			REGION_CODE
+		FROM 
+			[SYS_PROVINCE_LTBL]
+	</select>
+
+    <resultMap id="citiesMap" type="com.basicauth.data.City">
+        <result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR"/>
+        <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR"/>
+        <result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR"/>
+        <result column="COUNTRY_CODE" property="countryCode" jdbcType="VARCHAR"/>
+        <result column="COUNTRY_NAME" property="countryName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getCities" resultMap="citiesMap" resultType="java.util.List" useCache="true">
+
+		SELECT
+			CITY_CODE,
+			CITY_NAME,
+			PROVINCE_CODE,
+			REGION_CODE,
+			COUNTRY_CODE,
+			COUNTRY_NAME
+		FROM
+			[SYS_CITY_LTBL]
+
+	</select>
+
+
+    <resultMap id="specializationMap" type="com.basicauth.data.Specialization">
+        <result column="SPEC_CODE" property="specializationCode" jdbcType="VARCHAR"/>
+        <result column="SPEC_DESC" property="specializationDescription" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getSpecializations" resultMap="specializationMap" resultType="java.util.List" useCache="true">
+		 SELECT
+			SPEC_CODE,
+		 	SPEC_DESC
+		 FROM
+		 	SYS_SPECIALIZATION_LTBL
+	</select>
+
+    <select id="getDoctorToHospital" resultType="java.util.List" resultMap="doctorToHospitalListMap" useCache="true">
+		SELECT
+				a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+                      ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+                      ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+					  ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+					  ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+		FROM         SYS_DOCTOR_LTBL AS a
+					LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+					LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+					LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+					LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+					LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+					LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+			  AND a.DOCTOR_CODE = ISNULL(#{doctorCode},a.DOCTOR_CODE)
+			  AND CC.HOSPITAL_CODE = ISNULL(#{hospitalCode},CC.HOSPITAL_CODE)
+			  AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+			  AND (CC.ISACCREDITED = 'TRUE')
+			  --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+			  AND CC.REMARKS NOT LIKE 'FOR PGI%'
+			  AND AA.EFF_DATE_NAP is null
+		      ORDER BY CC.HOSPITAL_NAME, a.DOCTOR_CODE
+
+	</select>
+
+    <select id="getHospitalOfDoctors" resultMap="doctorToHospitalListMap" resultType="java.util.List" useCache="true">
+		 SELECT
+				a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+                      ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+                      ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+					  ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+					  ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+		FROM         SYS_DOCTOR_LTBL AS a
+					LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+					LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+					LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+					LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+					LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+					LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+			  AND a.DOCTOR_CODE = ISNULL(#{doctorCode},a.DOCTOR_CODE)
+			  AND (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+			  AND (CC.ISACCREDITED = 'TRUE')
+			  AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+			  AND CC.REMARKS NOT LIKE 'FOR PGI%'
+			  AND AA.EFF_DATE_NAP is null
+		ORDER BY CC.HOSPITAL_NAME, a.DOCTOR_CODE
+	</select>
+
+    <resultMap id="MaceDiagnosisProcedureMap" type="com.basicauth.data.MaceDiagnosisProcedure">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="diag_code" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="proc_code" property="procCode" jdbcType="VARCHAR"/>
+        <result column="active" property="active" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getDiagnosisProcedureList" resultMap="MaceDiagnosisProcedureMap" resultType="java.util.List"
+            useCache="true">
+		SELECT * FROM MaceDiagnosisProcedure
+	</select>
+
+    <select id="getDoctorCount" resultType="java.lang.Integer" useCache="true">
+		SELECT COUNT(DOCTOR_CODE) FROM SYS_DOCTOR_LTBL
+	</select>
+
+    <select id="checkIfDiagCodeAndProcedureCodeMatches" resultType="java.lang.Boolean">
+		SELECT CASE WHEN EXISTS(
+		SELECT *
+		FROM
+		MaceDiagnosisProcedure
+		WHERE
+		diag_code = #{diagCode, jdbcType=VARCHAR}
+		and proc_code = #{procedureCode, jdbcType=VARCHAR})
+		THEN CAST(0 AS BIT)
+		ELSE CAST(1 AS BIT) END
+	</select>
+
+
+    <select id="getHospitalsByLastUpdateDate" resultMap="hospitalMap" resultType="java.util.List" useCache="true">
+		SELECT a.*, (SELECT TOP 1 b.CNTCT_LNAME + ', ' + b.CNTCT_FNAME
+            FROM APPUSER b WHERE HOSPITAL = a.HOSPITAL_CODE) as CONTACT_PERSON
+        FROM vw_Hospitals a WHERE UPDATED_DATE &gt;= #{date}
+	</select>
+
+    <select id="getDoctorsByLastUpdateDate" resultMap="doctorMap" timeout="6000" resultType="java.util.List"
+            useCache="true">
+		SELECT  a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME,
+		CASE WHEN (a.DOC_MNAME IS NULL) THEN '' ELSE a.DOC_MNAME end as DOC_MNAME
+		,a.SPEC_CODE, B.SPEC_DESC,  a.WTAX, a.GRACE_PERIOD, a.VAT, a.CONTACT_NO
+		,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+		,a.PRC_NO
+		FROM        SYS_DOCTOR_LTBL AS a
+		LEFT JOIN SYS_SPECIALIZATION_LTBL AS B ON a.SPEC_CODE = B.SPEC_CODE
+		LEFT JOIN SYS_CITY_LTBL as C ON a.CITY_CODE = C.CITY_CODE
+		LEFT JOIN SYS_PROVINCE_LTBL as D ON a.PROVINCE_CODE = D.PROVINCE_CODE
+		LEFT JOIN SYS_REGION_LTBL as E ON a.REGION_CODE = E.REGION_CODE
+		WHERE   (a.ISACCREDITED = 'TRUE')
+		AND DOC_LNAME != ''
+		AND  a.UPDATED_DATE &gt;= #{date}
+	</select>
+
+    <resultMap id="DentistViewMap" type="com.basicauth.data.Dentist">
+        <result column="DENTIST_CODE" property="dentistCode" jdbcType="VARCHAR"/>
+        <result column="DENTIST_LNAME" property="lastName" jdbcType="VARCHAR"/>
+        <result column="DENTIST_FNAME" property="firstName" jdbcType="VARCHAR"/>
+        <result column="DENTIST_MNAME" property="middleName" jdbcType="VARCHAR"/>
+        <result column="DENTIST_ADD" property="dentistAddress" jdbcType="VARCHAR"/>
+        <result column="CONTACT_NO" property="contactNo" jdbcType="VARCHAR"/>
+        <result column="SCHEDULE" property="schedule" jdbcType="VARCHAR"/>
+        <result column="CLINIC" property="clinic" jdbcType="VARCHAR"/>
+        <result column="CITY_NAME" property="cityCode" jdbcType="VARCHAR"/>
+        <result column="PROVINCE_NAME" property="provinceCode" jdbcType="VARCHAR"/>
+        <result column="REGION_NAME" property="regionCode" jdbcType="VARCHAR"/>
+        <result column="FAXNO" property="faxNo" jdbcType="VARCHAR"/>
+        <result column="ISACCREDITED" property="isAccredited" jdbcType="VARCHAR"/>
+        <result column="EMAIL_ADD" property="email" jdbcType="VARCHAR"/>
+        <result column="OTHER_SPECIALTY" property="otherSpecialty" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getDentistList" resultMap="DentistViewMap" resultType="java.util.List">
+		SELECT * FROM vw_Dentists
+	</select>
+
+    <select id="getDentistListPaginated" resultMap="DentistViewMap" resultType="java.util.List">
+        SELECT * FROM vw_Dentists
+        WHERE DENTIST_LNAME IS NOT NULL
+        AND DENTIST_FNAME IS NOT NULL
+        AND DENTIST_LNAME != ''
+        AND (DENTIST_FNAME LIKE #{searchString} OR
+              DENTIST_LNAME LIKE #{searchString} OR
+              DENTIST_MNAME LIKE #{searchString})
+        ORDER BY DENTIST_LNAME, DENTIST_FNAME
+        OFFSET(#{offset}* #{count})ROWS
+        FETCH NEXT #{count} ROWS ONLY
+
+    </select>
+
+    <select id="getDoctorsToHospitalPaginated" resultMap="doctorToHospitalListMap" resultType="java.util.List"
+            useCache="true">
+        SELECT
+        a.DOCTOR_CODE, a.DOC_LNAME, a.DOC_FNAME, a.DOC_MNAME, CC.HOSPITAL_CODE, CC.HOSPITAL_NAME, AA.DOC_HOSP_ID
+        ,BB.SPEC_CODE, BB.SPEC_DESC, AA.SCHEDULE, AA.ROOM, a.WTAX, a.GRACE_PERIOD, a.VAT
+        ,CC.SPECIAL_REM, CC.REMARKS as Hosp_Remarks, CC.ROOM_BOARD, AA.REMARKS, AA.REMARKS_2
+        ,a.STREET, C.CITY_NAME,D.PROVINCE_NAME,E.REGION_DESC
+        ,CC.FAXNO,CC.PHONE_NO ,CC.CONTACT_PERSON, a.ISACCREDITED
+
+        FROM SYS_DOCTOR_LTBL AS a
+        LEFT JOIN SYS_DOC_HOSP_LTBL AS AA ON a.DOCTOR_CODE = AA.DOCTOR_CODE
+        LEFT JOIN SYS_SPECIALIZATION_LTBL AS BB ON A.SPEC_CODE = BB.SPEC_CODE
+        LEFT JOIN SYS_HOSPITALS_LTBL AS CC ON AA.HOSPITAL_CODE = CC.HOSPITAL_CODE
+        LEFT JOIN SYS_CITY_LTBL as C ON CC.CITY_CODE = C.CITY_CODE
+        LEFT JOIN SYS_PROVINCE_LTBL as D ON CC.PROVINCE_CODE = D.PROVINCE_CODE
+        LEFT JOIN SYS_REGION_LTBL as E ON CC.REGION_CODE = E.REGION_CODE
+        WHERE (CC.EFF_DATE_NAP IS NULL OR CC.EFF_DATE_NAP = '1900-01-01 00:00:00.000')
+        <if test="includeAccredited == true">
+            AND (a.ISACCREDITED = 'TRUE')
+        </if>
+        <if test="hospitalCode != null and hospitalCode != ''">
+            AND CC.HOSPITAL_CODE = ISNULL(#{hospitalCode},CC.HOSPITAL_CODE)
+        </if>
+        --AND (CC.SPECIAL_REM IS NULL OR CC.SPECIAL_REM = '')
+        AND CC.REMARKS NOT LIKE 'FOR PGI%'
+        AND AA.EFF_DATE_NAP is null
+        AND (a.DOC_LNAME LIKE #{searchString}
+        OR a.DOC_FNAME LIKE #{searchString}
+        OR BB.SPEC_DESC LIKE #{searchString})
+        AND a.DOC_LNAME IS NOT NULL
+        AND a.DOC_LNAME != ''
+        <if test="specList != null and !specList.isEmpty()">
+            AND BB.SPEC_DESC IN
+            <foreach item="item" index="index" collection="specList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+
+        <if test="roomSearch != ''">
+            AND AA.ROOM LIKE #{roomSearch}
+        </if>
+
+        <if test="sortBy == 1">
+            ORDER BY a.DOC_LNAME ,a.DOC_FNAME
+        </if>
+
+        <if test="sortBy == 2">
+            ORDER BY AA.ROOM,a.DOC_LNAME
+        </if>
+
+        <if test="sortBy == 3">
+            ORDER BY BB.SPEC_DESC,a.DOC_LNAME
+        </if>
+
+        OFFSET (#{offset} * #{count}) ROWS
+        FETCH NEXT #{count} ROWS ONLY
+    </select>
+
+
+    <select id="getInPatientPhysicianLogs" resultMap="IPPhysicianLogsMap" resultType="java.util.List">
+        SELECT * FROM MACE_REQ_IP_DOCTOR WHERE MACEREQUEST_ID = #{requestId}
+    </select>
+
+
+    <resultMap id="IPPhysicianLogsMap" type="com.basicauth.data.IpAuditLogsDoctor">
+        <result column="DOCTOR_CODE" property="doctorCode" jdbcType="VARCHAR"/>
+        <result column="DOC_LNAME" property="docLname" jdbcType="VARCHAR"/>
+        <result column="DOC_FNAME" property="docFname" jdbcType="VARCHAR"/>
+        <result column="DOC_MNAME" property="docMname" jdbcType="VARCHAR"/>
+        <result column="SPECIALIZATION" property="docSpec" jdbcType="VARCHAR"/>
+        <result column="ISACCREDITED" property="isAccredited" jdbcType="VARCHAR"/>
+        <result column="ADDED_BY" property="addedBy" jdbcType="VARCHAR"/>
+        <result column="FULL_NAME" property="fullName" jdbcType="VARCHAR"/>
+        <result column="ADDED_ON" property="addedOn" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getRequestedHospitalByMember" resultMap="hospitalMap" resultType="java.util.List" useCache="true">
+        SELECT * FROM vw_Hospitals
+        WHERE HOSPITAL_CODE IN (
+          SELECT DISTINCT HOSPITAL_CODE
+          FROM (
+            SELECT REQUEST_FROMHOSP AS HOSPITAL_CODE
+            FROM MACE_REQUEST
+            WHERE MEMBER_CODE = #{memberCode}
+            UNION
+            SELECT HOSPITAL_CODE
+            FROM MACEREQ_CONSULT
+            WHERE MACEREQUEST_ID IN (
+              SELECT DISTINCT REQUEST_ID
+              FROM MACE_REQUEST
+              WHERE MEMBER_CODE = #{memberCode}
+            )
+            UNION
+            SELECT HOSPITAL_CODE
+            FROM MACEREQ_TEST
+            WHERE MACEREQUEST_ID IN (
+              SELECT DISTINCT REQUEST_ID
+              FROM MACE_REQUEST
+              WHERE MEMBER_CODE = #{memberCode}
+            )
+            UNION
+            SELECT HOSPITAL_CODE
+            FROM MACEREQ_PROCEDURE
+            WHERE MACEREQUEST_ID IN (
+              SELECT DISTINCT REQUEST_ID
+              FROM MACE_REQUEST
+              WHERE MEMBER_CODE = #{memberCode}
+            )
+          ) DISTINCT_HOSPITAL_CODE
+          WHERE HOSPITAL_CODE IS NOT NULL
+        )
+        ORDER BY HOSPITAL_NAME
+    </select>
+
+    <select id="getRequestedPhysicianByMember" resultMap="doctorToHospitalListMap" resultType="java.util.List"
+            useCache="true">
+      SELECT *
+      FROM SYS_DOCTOR_LTBL
+      WHERE DOCTOR_CODE IN (
+        SELECT DISTINCT DOCTOR_CODE
+        FROM (
+        SELECT DOCTOR_CODE
+        FROM MACEREQ_CONSULT
+        WHERE MACEREQUEST_ID IN (
+        SELECT DISTINCT REQUEST_ID
+        FROM MACE_REQUEST
+        WHERE MEMBER_CODE = #{memberCode}
+        )
+        UNION
+        SELECT DOCTOR_CODE
+        FROM MACEREQ_TEST
+        WHERE MACEREQUEST_ID IN (
+        SELECT DISTINCT REQUEST_ID
+        FROM MACE_REQUEST
+        WHERE MEMBER_CODE = #{memberCode}
+        )
+        UNION
+        SELECT DOCTOR_CODE
+        FROM MACEREQ_PROCEDURE
+        WHERE MACEREQUEST_ID IN (
+        SELECT DISTINCT REQUEST_ID
+        FROM MACE_REQUEST
+        WHERE MEMBER_CODE = #{memberCode}
+        )
+        ) DISTINCT_DOCTOR_CODE
+        WHERE DOCTOR_CODE IS NOT NULL
+      )
+      ORDER BY DOC_LNAME, DOC_FNAME, DOC_MNAME
+    </select>
+
+
+</mapper>

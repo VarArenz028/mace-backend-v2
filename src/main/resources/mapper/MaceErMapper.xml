@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.mace.MaceErMapper">
+
+    <resultMap id="maceReqErDiagMap" type="com.basicauth.domain.MaceReqErDiag">
+        <result column="reqdiag_id" property="reqDiagId" jdbcType="INTEGER"/>
+        <result column="macerequest_id" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="transaction_id" property="transactionId" jdbcType="INTEGER"/>
+        <result column="diag_code" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="icd10_code" property="icd10Code" jdbcType="VARCHAR"/>
+        <result column="icd10_class" property="icd10Class" jdbcType="VARCHAR"/>
+        <result column="icd10_4c" property="icd104C" jdbcType="VARCHAR"/>
+        <result column="diag_desc" property="diagDesc" jdbcType="VARCHAR"/>
+        <result column="diag_type_old" property="diagTypeOld" jdbcType="VARCHAR"/>
+        <result column="diag_type" property="diagType" jdbcType="VARCHAR"/>
+        <result column="DIAG_CASETYPE" property="diagCaseType" jdbcType="VARCHAR"/>
+        <result column="type_desc" property="typeDesc" jdbcType="VARCHAR"/>
+        <result column="group_desc" property="groupDesc" jdbcType="VARCHAR"/>
+        <result column="diag_class" property="diagClass" jdbcType="VARCHAR"/>
+        <result column="diag_remarks" property="diagRemarks" jdbcType="VARCHAR"/>
+        <result column="mace_diag_type" property="maceDiagType" jdbcType="INTEGER"/>
+        <result column="TRANS_CODE" property="transCode" jdbcType="NVARCHAR"/>
+        <result column="DISEASE_LIMIT" property="diseaseLimit" jdbcType="DECIMAL"/>
+        <result column="REM_LIMIT" property="remLimit" jdbcType="DECIMAL"/>
+        <result column="IS_PRIMARY" property="isPrimary" jdbcType="BOOLEAN"/>
+        <result column="IS_ADMITTING" property="isAdmitting" jdbcType="BOOLEAN"/>
+        <result column="IS_FINAL" property="isFinal" jdbcType="BOOLEAN"/>
+        <result column="TO_RULE_OUT" property="toRuleOut" jdbcType="BOOLEAN"/>
+        <result column="TO_CONSIDER" property="toConsider" jdbcType="BOOLEAN"/>
+        <result column="VERSUS" property="versus" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <resultMap id="maceReqErDoctorMap" type="com.basicauth.domain.MaceReqErDoctor">
+        <result column="ER_REQDOC_ID" property="erReqDocId" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="DOC_HOSP_ID" property="docHospId" jdbcType="INTEGER"/>
+        <result column="DOCTOR_CODE" property="doctorCode" jdbcType="VARCHAR"/>
+        <result column="DOC_LNAME" property="docLName" jdbcType="VARCHAR"/>
+        <result column="DOC_FNAME" property="docFName" jdbcType="VARCHAR"/>
+        <result column="DOC_MNAME" property="docMName" jdbcType="VARCHAR"/>
+        <result column="ISACCREDITED" property="isAccredited" jdbcType="BOOLEAN"/>
+        <result column="HOSPITAL_CODE" property="hospitalCode" jdbcType="VARCHAR"/>
+        <result column="HOSP_PROF_FEE" property="hospProfFee" jdbcType="DECIMAL"/>
+        <result column="DEF_PROF_FEE" property="defProfFee" jdbcType="DECIMAL"/>
+        <result column="ACTUAL_PROF_FEE" property="actualProfFee" jdbcType="DECIMAL"/>
+        <result column="MACE_DOCTYPE" property="maceDocType" jdbcType="VARCHAR"/>
+        <result column="ADDED_ON" property="addedOn" jdbcType="TIMESTAMP"/>
+        <result column="ADDED_BY" property="addedBy" jdbcType="VARCHAR"/>
+        <result column="PROC_CODE" property="procCode" jdbcType="VARCHAR"/>
+        <result column="PROC_DESC" property="procDesc" jdbcType="VARCHAR"/>
+        <result column="SPECIALIZATION" property="specialization" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="maceReqErOtherChargesMap" type="com.basicauth.domain.MaceReqErOtherCharges">
+        <result column="ER_OTHERCHARGE_ID" property="erOtherChargeId" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="CHARGE_TYPE" property="chargeType" jdbcType="VARCHAR"/>
+        <result column="DIAG_CODE" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="DETAILS" property="details" jdbcType="VARCHAR"/>
+        <result column="CHARGE_AMOUNT" property="chargeAmount" jdbcType="DECIMAL"/>
+        <result column="DIAG_DESC" property="diagDesc" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <resultMap id="maceReqErOtherInformationMap" type="com.basicauth.domain.MaceReqErOtherInformation">
+        <result column="ER_OTHERINFORMATION_ID" property="erOtherInformationId" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="INFORMATION_TYPE" property="informationType" jdbcType="VARCHAR"/>
+        <result column="DETAILS" property="details" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="maceReqErProcedureMap" type="com.basicauth.domain.MaceReqErProcedure">
+        <result column="DIAGPROC_ID" property="diagProcId" jdbcType="INTEGER"/>
+        <result column="REQDIAG_ID" property="reqDiagId" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="PRESCRIBEDTEST_ID" property="prescribedTestId" jdbcType="INTEGER"/>
+        <result column="TRANSACTION_ID" property="transactionId" jdbcType="INTEGER"/>
+        <result column="REF_DIAGPROC_ID" property="refDiagProcId" jdbcType="VARCHAR"/>
+        <result column="DIAG_CODE" property="diagCode" jdbcType="VARCHAR"/>
+        <result column="PROC_CODE" property="procCode" jdbcType="VARCHAR"/>
+        <result column="PROC_DESC" property="procDesc" jdbcType="VARCHAR"/>
+        <result column="RUV" property="ruv" jdbcType="VARCHAR"/>
+        <result column="AREA" property="area" jdbcType="VARCHAR"/>
+        <result column="PROC_HOSPAMOUNT" property="procHospAmount" jdbcType="DECIMAL"/>
+        <result column="PROC_DEFAMOUNT" property="procDefAmount" jdbcType="DECIMAL"/>
+        <result column="PROC_ACTUALAMOUNT" property="procActualAmount" jdbcType="DECIMAL"/>
+        <result column="GROUP" property="group" jdbcType="VARCHAR"/>
+        <result column="PROC_TYPE" property="procType" jdbcType="VARCHAR"/>
+        <result column="PROC_TYPEDESC" property="procTypeDesc" jdbcType="VARCHAR"/>
+        <result column="PROC_CLASS" property="procClass" jdbcType="VARCHAR"/>
+        <result column="PROC_CLASSDESC" property="procClassDesc" jdbcType="VARCHAR"/>
+        <result column="REMARKS" property="remarks" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="MACE_SUBTYPE" property="maceSubType" jdbcType="VARCHAR"/>
+        <result column="TRANS_CODE" property="transCode" jdbcType="VARCHAR"/>
+        <result column="AREA" property="area" jdbcType="NVARCHAR"/>
+        <result column="EXCLUDED" property="excluded" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <resultMap id="maceReqErRoomMap" type="com.basicauth.domain.MaceReqErRoom">
+        <result column="ER_ROOM_ID" property="erRoomId" jdbcType="INTEGER"/>
+        <result column="HOSPITAL_CODE" property="hospitalCode" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="ROOMPLAN" property="roomPlan" jdbcType="VARCHAR"/>
+        <result column="ROOMTYPE" property="roomType" jdbcType="VARCHAR"/>
+        <result column="RATE" property="rate" jdbcType="VARCHAR"/>
+        <result column="DATE_FROM" property="dateFrom" jdbcType="TIMESTAMP"/>
+        <result column="DATE_TO" property="dateTo" jdbcType="TIMESTAMP"/>
+        <result column="ISROOMSHARING" property="isRoomSharing" jdbcType="BOOLEAN"/>
+        <result column="ADDED_ON" property="addedOn" jdbcType="TIMESTAMP"/>
+        <result column="ADDED_BY" property="addedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_UPDATE_ON" property="lastUpdateOn" jdbcType="TIMESTAMP"/>
+        <result column="LAST_UPDATE_BY" property="lastUpdateBy" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="maceReqErTestMap" type="com.basicauth.domain.MaceReqErTests">
+        <result column="DIAGTEST_ID" property="diagTestId" jdbcType="INTEGER"/>
+        <result column="REQDIAG_ID" property="reqDiagId" jdbcType="INTEGER"/>
+        <result column="MACEREQUEST_ID" property="maceRequestId" jdbcType="INTEGER"/>
+        <result column="PRESCRIBEDTEST_ID" property="prescribedTestId" jdbcType="INTEGER"/>
+        <result column="TRANSACTION_ID" property="transactionId" jdbcType="INTEGER"/>
+        <result column="REF_DIAGPROC_ID" property="refDiagProcId" jdbcType="INTEGER"/>
+        <result column="DIAG_CODE" property="diagCode" jdbcType="INTEGER"/>
+        <result column="PROC_CODE" property="procCode" jdbcType="INTEGER"/>
+        <result column="PROC_DESC" property="procDesc" jdbcType="VARCHAR"/>
+        <result column="RUV" property="ruv" jdbcType="VARCHAR"/>
+        <result column="PROC_HOSPAMOUNT" property="procHospAmount" jdbcType="VARCHAR"/>
+        <result column="PROC_DEFAMOUNT" property="procDefAmount" jdbcType="VARCHAR"/>
+        <result column="PROC_ACTUALAMOUNT" property="procActualAmount" jdbcType="VARCHAR"/>
+        <result column="GROUP" property="group" jdbcType="VARCHAR"/>
+        <result column="PROC_TYPE" property="procType" jdbcType="VARCHAR"/>
+        <result column="PROC_TYPEDESC" property="procTypeDesc" jdbcType="VARCHAR"/>
+        <result column="PROC_CLASS" property="procClass" jdbcType="VARCHAR"/>
+        <result column="PROC_CLASSDESC" property="procClassDesc" jdbcType="VARCHAR"/>
+        <result column="REMARKS" property="remarks" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="MACE_SUBTYPE" property="maceSubType" jdbcType="VARCHAR"/>
+        <result column="TRANS_CODE" property="transCode" jdbcType="NVARCHAR"/>
+    </resultMap>
+
+    <!--Select by Mace Req Id-->
+    <!--<select id="getMaceReqErDiagByMaceReqId" resultMap="maceReqErDiagMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_DIAG WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErDoctorByMaceReqId" resultMap="maceReqErDoctorMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_DOCTOR WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErOtherChargesByMaceReqId" resultMap="maceReqErOtherChargesMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_OTHERCHARGES WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErOtherInformationByMaceReqId" resultMap="maceReqErOtherInformationMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_OTHERINFORMATION WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErProcedureByMaceReqId" resultMap="maceReqErProcedureMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_PROCDURE WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErRoomByMaceReqId" resultMap="maceReqErRoomMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_ROOM WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErTestsByMaceReqId" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_TESTS WHERE MACEREQUEST_ID = #{requestId}-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;Select all&ndash;&gt;-->
+    <!--<select id="getMaceReqErDiags" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_DIAG-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErDoctors" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_DOCTOR-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErOtherCharges" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_OTHERCHARGES-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErOtherInformations" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_OTHERINFORMATION-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErProcedures" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_PROCDURE-->
+    <!--</select>-->
+    <!---->
+    <!--<select id="getMaceReqErRooms" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_ROOM-->
+    <!--</select>-->
+
+    <!--<select id="getMaceReqErTests" resultMap="maceReqErTestMap" resultType="java.util.List">-->
+        <!--SELECT * FROM MACE_REQ_ER_TESTS-->
+    <!--</select>-->
+
+    <insert id="saveMaceReqER" parameterType="com.basicauth.domain.MaceReqEr"
+            useGeneratedKeys="true" keyProperty="mrer.transactionId" keyColumn="transaction_id">
+        INSERT INTO MACEREQ_ER (
+        MACEREQUEST_ID,
+        REQUEST_FROM,
+        STATUS,
+        STATUS_REMARKS,
+        APPROVED_ON,
+        APPROVED_BY,
+        APPROVAL_REMARKS,
+        DISAPPROVED_ON,
+        DISAPPROVED_BY,
+        DISAPPROVAL_REMARKS,
+        DISAPPROVAL_REASON,
+        LOA_NO,
+        ADMITTED_ON,
+        ROOMBOARD,
+        ROOM_NO,
+        ROOMRATE_PERDAY,
+        RECORD_SUBMITTED_ON,
+        RECORD_SUBMITTED_BY,
+        ER_REASON_REMARKS,
+        DOC_HOSP_ID,
+        DOCTOR_CODE,
+        HOSPITAL_CODE,
+        ESTIMATED_COST,
+        PRIMARY_DIAGNOSIS_CODE,
+        PRIMARY_DIAGNOSIS_ICD10,
+        PRIMARY_DIAGNOSIS_DESC,
+        DX_REMARKS,
+        DISCHARGED_ON,
+        DISCHARGEUPDATE_BY,
+        LASTUPDATE_ON,
+        LASTUPDATE_BY,
+        PEC_LIMIT,
+        PEC_REMLIMIT,
+        DD_LIMIT,
+        DD_REMLIMIT,
+        DISPOSITION,
+        DISP_REMARKS
+        ) VALUES (
+        #{mrer.maceRequestId, jdbcType=INTEGER},
+        #{mrer.requestFrom, jdbcType=VARCHAR},
+        #{mrer.status, jdbcType=VARCHAR},
+        #{mrer.statusRemarks, jdbcType=VARCHAR},
+        #{mrer.approvedOn, jdbcType=TIMESTAMP},
+        #{mrer.approvedBy, jdbcType=VARCHAR},
+        #{mrer.approvalRemarks, jdbcType=VARCHAR},
+        #{mrer.disapprovedOn, jdbcType=DATE},
+        #{mrer.disapprovedBy, jdbcType=VARCHAR},
+        #{mrer.disapprovalRemarks, jdbcType=VARCHAR},
+        #{mrer.disapprovalReason, jdbcType=VARCHAR},
+        #{mrer.loaNo, jdbcType=VARCHAR},
+        #{mrer.admittedOn, jdbcType=DATE},
+        #{mrer.roomboard, jdbcType=VARCHAR},
+        #{mrer.roomNo, jdbcType=VARCHAR},
+        #{mrer.roomratePerday, jdbcType=NUMERIC},
+        #{mrer.recordSubmittedOn, jdbcType=DATE},
+        #{mrer.recordSubmittedBy, jdbcType=VARCHAR},
+        #{mrer.erReasonRemarks, jdbcType=VARCHAR},
+        '0',
+        '0',
+        #{mrer.hospitalCode, jdbcType=VARCHAR},
+        #{mrer.estimatedCost, jdbcType=NUMERIC},
+        #{mrer.primaryDiagnosisCode, jdbcType=VARCHAR},
+        #{mrer.primaryDiagnosisIcd10, jdbcType=VARCHAR},
+        #{mrer.primaryDiagnosisDesc, jdbcType=VARCHAR},
+        #{mrer.dxRemarks, jdbcType=VARCHAR},
+        #{mrer.dischargedOn, jdbcType=DATE},
+        #{mrer.dischargeupdateBy, jdbcType=VARCHAR},
+        #{mrer.lastupdateOn, jdbcType=DATE},
+        #{mrer.lastupdateBy, jdbcType=VARCHAR},
+        #{mrer.pecLimit, jdbcType=VARCHAR},
+        #{mrer.pecRemlimit, jdbcType=VARCHAR},
+        #{mrer.ddLimit, jdbcType=VARCHAR},
+        #{mrer.ddRemlimit, jdbcType=VARCHAR},
+        #{mrer.disposition, jdbcType=VARCHAR},
+        #{mrer.dispRemarks, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveMaceReqERDiag" parameterType="com.basicauth.domain.MaceReqErDiag" flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErDiag.reqDiagId" keyColumn="REQDIAG_ID">
+        INSERT INTO [dbo].[MACE_REQ_ER_DIAG]
+        ([MACEREQUEST_ID]
+        ,[TRANSACTION_ID]
+        ,[DIAG_CODE]
+        ,[ICD10_CODE]
+        ,[ICD10_CLASS]
+        ,[ICD10_4C]
+        ,[DIAG_DESC]
+        ,[DIAG_TYPE_OLD]
+        ,[DIAG_TYPE]
+        ,[DIAG_CASETYPE]
+        ,[TYPE_DESC]
+        ,[GROUP_DESC]
+        ,[DIAG_CLASS]
+        ,[DIAG_REMARKS]
+        ,[TO_RULE_OUT]
+        ,[TO_CONSIDER]
+        ,[VERSUS]
+        ,[MACE_DIAG_TYPE]
+        ,[TRANS_CODE]
+        ,[DISEASE_LIMIT]
+        ,[REM_LIMIT]
+        ,[IS_PRIMARY]
+        ,[IS_ADMITTING]
+        ,[IS_FINAL])
+        VALUES
+        (#{maceReqErDiag.maceRequestId, jdbcType=INTEGER}
+        ,#{maceReqErDiag.transactionId, jdbcType=INTEGER}
+        ,#{maceReqErDiag.diagCode, jdbcType=INTEGER}
+        ,#{maceReqErDiag.icd10Code, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.icd10Class, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.icd104C, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagDesc, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagTypeOld, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagType, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagCaseType, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.typeDesc, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.groupDesc, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagClass, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diagRemarks, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.toRuleOut, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.toConsider, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.versus, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.maceDiagType, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.transCode, jdbcType=VARCHAR}
+        ,#{maceReqErDiag.diseaseLimit, jdbcType=DECIMAL}
+        ,#{maceReqErDiag.remLimit, jdbcType=DECIMAL}
+        ,#{maceReqErDiag.isPrimary, jdbcType=BIT}
+        ,#{maceReqErDiag.isAdmitting, jdbcType=BIT}
+        ,#{maceReqErDiag.isFinal, jdbcType=BIT})
+    </insert>
+
+    <insert id="saveMaceReqERDoctor" parameterType="com.basicauth.domain.MaceReqErDoctor" flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErDoctor.erReqdocId" keyColumn="OP_REQDOC_ID">
+        INSERT INTO MACE_REQ_ER_DOCTOR(
+        MACEREQUEST_ID,
+        DOC_HOSP_ID,
+        DOCTOR_CODE,
+        DOC_LNAME,
+        DOC_FNAME,
+        DOC_MNAME,
+        SPECIALIZATION,
+        ISACCREDITED,
+        HOSPITAL_CODE,
+        HOSP_PROF_FEE,
+        DEF_PROF_FEE,
+        ACTUAL_PROF_FEE,
+        MACE_DOCTYPE,
+        PROC_CODE,
+        PROC_DESC,
+        ADDED_ON,
+        ADDED_BY
+        ) VALUES (
+        #{maceReqErDoctor.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErDoctor.docHospId, jdbcType=INTEGER},
+        #{maceReqErDoctor.doctorCode, jdbcType=VARCHAR},
+        #{maceReqErDoctor.docLname, jdbcType=VARCHAR},
+        #{maceReqErDoctor.docFname, jdbcType=VARCHAR},
+        #{maceReqErDoctor.docMname, jdbcType=VARCHAR},
+        #{maceReqErDoctor.specialization, jdbcType=VARCHAR},
+        #{maceReqErDoctor.isAccredited, jdbcType=BIT},
+        #{maceReqErDoctor.hospitalCode, jdbcType=VARCHAR},
+        #{maceReqErDoctor.hospProfFee, jdbcType=DECIMAL},
+        #{maceReqErDoctor.defProfFee, jdbcType=DECIMAL},
+        #{maceReqErDoctor.actualProfFee, jdbcType=DECIMAL},
+        #{maceReqErDoctor.maceDoctype, jdbcType=VARCHAR},
+        #{maceReqErDoctor.procCode, jdbcType=VARCHAR},
+        #{maceReqErDoctor.procDesc, jdbcType=VARCHAR},
+        #{maceReqErDoctor.addedOn, jdbcType=TIMESTAMP},
+        #{maceReqErDoctor.addedBy, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveMaceReqEROtherCharges" parameterType="com.basicauth.domain.MaceReqErOtherCharges"
+            flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErOtherCharges.erOtherChargeId"
+            keyColumn="ER_OTHERCHARGE_ID">
+        INSERT INTO MACE_REQ_ER_OTHERCHARGES(
+        MACEREQUEST_ID,
+        CHARGE_TYPE,
+        DIAG_CODE,
+        DIAG_DESC,
+        DETAILS,
+        CHARGE_AMOUNT
+        ) VALUES (
+        #{maceReqErOtherCharges.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErOtherCharges.chargeType, jdbcType=VARCHAR},
+        #{maceReqErOtherCharges.diagCode, jdbcType=VARCHAR},
+        #{maceReqErOtherCharges.diagDesc, jdbcType=VARCHAR},
+        #{maceReqErOtherCharges.details, jdbcType=VARCHAR},
+        #{maceReqErOtherCharges.chargeAmount, jdbcType=DECIMAL}
+        )
+    </insert>
+
+    <insert id="saveMaceReqEROtherInformation" parameterType="com.basicauth.domain.MaceReqErOtherInformation"
+            flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErOtherInformation.erOtherInformationId"
+            keyColumn="ER_OTHERINFORMATION_ID">
+        INSERT INTO MACE_REQ_ER_OTHERINFORMATION(
+        MACEREQUEST_ID,
+        INFORMATION_TYPE,
+        DETAILS
+        ) VALUES (
+        #{maceReqErOtherInformation.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErOtherInformation.informationType, jdbcType=VARCHAR},
+        #{maceReqErOtherInformation.details, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveMaceReqERProcedure" parameterType="com.basicauth.domain.MaceReqErProcedure" flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErProcedure.diagProcId" keyColumn="DIAGPROC_ID">
+        INSERT INTO MACE_REQ_ER_PROCEDURE (
+        REQDIAG_ID,
+        MACEREQUEST_ID,
+        PRESCRIBEDTEST_ID,
+        TRANSACTION_ID,
+        REF_DIAGPROC_ID,
+        DIAG_CODE,
+        PROC_CODE,
+        PROC_DESC,
+        RUV,
+        AREA,
+        PROC_HOSPAMOUNT,
+        PROC_DEFAMOUNT,
+        PROC_ACTUALAMOUNT,
+        "GROUP",
+        PROC_TYPE,
+        PROC_TYPEDESC,
+        PROC_CLASS,
+        PROC_CLASSDESC,
+        REMARKS,
+        STATUS,
+        MACE_SUBTYPE,
+        TRANS_CODE) VALUES (
+        #{maceReqErProcedure.reqDiagId, jdbcType=INTEGER},
+        #{maceReqErProcedure.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErProcedure.prescribedTestId, jdbcType=INTEGER},
+        #{maceReqErProcedure.transactionId, jdbcType=VARCHAR},
+        #{maceReqErProcedure.refDiagProcId, jdbcType=VARCHAR},
+        #{maceReqErProcedure.diagCode, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procCode, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procDesc, jdbcType=VARCHAR},
+        #{maceReqErProcedure.ruv, jdbcType=VARCHAR},
+        #{maceReqErProcedure.area, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procHospAmount, jdbcType=DECIMAL},
+        #{maceReqErProcedure.procDefAmount, jdbcType=DECIMAL},
+        #{maceReqErProcedure.procActualAmount, jdbcType=DECIMAL},
+        #{maceReqErProcedure.group, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procType, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procTypeDesc, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procClass, jdbcType=VARCHAR},
+        #{maceReqErProcedure.procClassDesc, jdbcType=VARCHAR},
+        #{maceReqErProcedure.remarks, jdbcType=VARCHAR},
+        #{maceReqErProcedure.status, jdbcType=VARCHAR},
+        #{maceReqErProcedure.maceSubtype, jdbcType=VARCHAR},
+        #{maceReqErProcedure.transCode, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveMaceReqERRoom" parameterType="com.basicauth.domain.MaceReqErRoom" flushCache="true"
+            useGeneratedKeys="true" keyProperty="maceReqErRoom.erReqRoomId" keyColumn="ER_ROOM_ID">
+        INSERT INTO MACE_REQ_ER_ROOM(
+        MACEREQUEST_ID,
+        HOSPITAL_CODE,
+        ROOMPLAN,
+        ROOMTYPE,
+        RATE,
+        DATE_FROM,
+        DATE_TO,
+        ISROOMSHARING,
+        ADDED_ON,
+        ADDED_BY,
+        LAST_UPDATE_ON,
+        LAST_UPDATE_BY
+        ) VALUES (
+        #{maceReqErRoom.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErRoom.hospitalCode, jdbcType=VARCHAR},
+        #{maceReqErRoom.roomplan, jdbcType=VARCHAR},
+        #{maceReqErRoom.roomtype, jdbcType=VARCHAR},
+        #{maceReqErRoom.rate, jdbcType=DECIMAL},
+        #{maceReqErRoom.dateFrom, jdbcType=TIMESTAMP},
+        #{maceReqErRoom.dateTo, jdbcType=TIMESTAMP},
+        #{maceReqErRoom.isRoomSharing, jdbcType=BIT},
+        #{maceReqErRoom.addedOn, jdbcType=TIMESTAMP},
+        #{maceReqErRoom.addedBy, jdbcType=VARCHAR},
+        #{maceReqErRoom.lastUpdateOn, jdbcType=TIMESTAMP},
+        #{maceReqErRoom.lastUpdateBy, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveMaceReqERTests" parameterType="com.basicauth.domain.MaceReqErTests" flushCache="true"
+            useGeneratedKeys="true" keyProperty="F.diagTestId" keyColumn="DIAGTEST_ID">
+        INSERT INTO [dbo].[MACE_REQ_ER_TESTS] (
+        [REQDIAG_ID],
+        [MACEREQUEST_ID],
+        [PRESCRIBEDTEST_ID],
+        [TRANSACTION_ID],
+        [REF_DIAGPROC_ID],
+        [DIAG_CODE],
+        [PROC_CODE],
+        [PROC_DESC],
+        [RUV],
+        [PROC_HOSPAMOUNT],
+        [PROC_DEFAMOUNT],
+        [PROC_ACTUALAMOUNT],
+        [GROUP],
+        [PROC_TYPE],
+        [PROC_TYPEDESC],
+        [PROC_CLASS],
+        [PROC_CLASSDESC],
+        [REMARKS],
+        [STATUS],
+        [MACE_SUBTYPE],
+        [TRANS_CODE]
+        ) VALUES (
+        #{maceReqErTest.reqDiagId, jdbcType=INTEGER},
+        #{maceReqErTest.maceRequestId, jdbcType=INTEGER},
+        #{maceReqErTest.prescribedTestId, jdbcType=INTEGER},
+        #{maceReqErTest.transactionId, jdbcType=INTEGER},
+        #{maceReqErTest.refDiagProcId, jdbcType=INTEGER},
+        #{maceReqErTest.diagCode, jdbcType=VARCHAR},
+        #{maceReqErTest.procCode, jdbcType=VARCHAR},
+        #{maceReqErTest.procDesc, jdbcType=VARCHAR},
+        #{maceReqErTest.ruv, jdbcType=VARCHAR},
+        #{maceReqErTest.procHospAmount, jdbcType=DECIMAL},
+        #{maceReqErTest.procDefAmount, jdbcType=DECIMAL},
+        #{maceReqErTest.procActualAmount, jdbcType=DECIMAL},
+        #{maceReqErTest.group, jdbcType=VARCHAR},
+        #{maceReqErTest.procType, jdbcType=VARCHAR},
+        #{maceReqErTest.procTypeDesc, jdbcType=VARCHAR},
+        #{maceReqErTest.procClass, jdbcType=VARCHAR},
+        #{maceReqErTest.procClassDesc, jdbcType=VARCHAR},
+        #{maceReqErTest.procClassDesc, jdbcType=VARCHAR},
+        #{maceReqErTest.status, jdbcType=INTEGER},
+        #{maceReqErTest.maceSubtype, jdbcType=INTEGER},
+        #{maceReqErTest.transCode, jdbcType=VARCHAR}
+        )
+    </insert>
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.ProcedureMapper">
+
+    <resultMap id="getProcedureMap" type="com.basicauth.domain.TestProcObject">
+        <result column="ProcedureId" property="procedureId" jdbcType="INTEGER"/>
+        <result column="ProcedureName" property="procName" jdbcType="VARCHAR"/>
+        <result column="ProcedureDesc" property="procDesc" jdbcType="VARCHAR"/>
+        <result column="ProcedureCode" property="procCode" jdbcType="VARCHAR"/>
+        <result column="Rate" property="amount" jdbcType="DECIMAL"/>
+        <result column="CreatedBy" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="CreatedDate" property="createdDate" jdbcType="TIMESTAMP"/>
+        <result column="UpdatedBy" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="UpdatedDate" property="updatedDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="getProcedure" resultMap="getProcedureMap"
+            resultType="java.util.List">
+        SELECT ProcedureId, ProcedureName, ProcedureDesc, ProcedureCode, Rate,
+            CreatedBy, CreatedDate, UpdatedBy, UpdatedDate
+        FROM [PROCEDURE]
+        ORDER BY ProcedureName
+    </select>
+
+    <delete id="delete" flushCache="true">
+        DELETE FROM [PROCEDURE]
+        WHERE ProcedureId =#{procedureId, jdbcType=INTEGER}
+    </delete>
+
+</mapper>

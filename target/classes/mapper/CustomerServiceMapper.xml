@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.mace.CustomerServiceMapper">
+
+    <insert id="saveTransactionCustomerCare" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+        INSERT INTO [SYS_CUST_CARE_MTBL]
+        ([CALLER_ID]
+        ,[START_TIME]
+        ,[END_TIME]
+        ,[RETURNED_CALL]
+        ,[CALLER]
+        ,[CALL_TYPE_ID]
+        ,[CALL_DATE]
+        ,[REMARKS]
+        ,[UPDATED_BY]
+        ,[UPDATED_DATE]
+        ,[HOSPITAL_CODE]
+        )
+        VALUES
+        (#{c.callerId, jdbcType=VARCHAR}
+        ,#{c.startTime, jdbcType=TIMESTAMP}
+        ,#{c.endTime, jdbcType=TIMESTAMP}
+        ,#{c.returnedCall, jdbcType=INTEGER}
+        ,#{c.caller, jdbcType=VARCHAR}
+        ,#{c.callTypeId, jdbcType=INTEGER}
+        ,#{c.callDate, jdbcType=TIMESTAMP}
+        ,#{c.deviceId, jdbcType=VARCHAR}
+        ,#{c.updatedBy, jdbcType=VARCHAR}
+        ,#{c.updatedDate, jdbcType=TIMESTAMP}
+        ,#{c.hospitalCode, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveTransactionCustomerCareApproval" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+        INSERT INTO [SYS_CUST_CARE_LTBL]
+        ([BATCH_CODE]
+        ,[CALLER_ID]
+        ,[MEMBER_CODE]
+        ,[TYPE]
+        ,[ROOM]
+        ,[DATE_ADMITTED]
+        ,[DIAGNOSIS]
+        ,[PROCEDURE_DESC]
+        ,[PROCEDURE_AMT]
+        ,[RUNNING_BILL]
+        ,[ACTION_TAKEN]
+        ,[APPROVAL_NO]
+        ,[REMARKS]
+        ,[NOTES]
+        ,[REASON]
+        ,[UPDATED_BY]
+        ,[UPDATED_DATE]
+        ,[MEM_LNAME]
+        ,[MEM_FNAME]
+        ,[MEM_MI]
+        ,[MEM_COMPANY]
+        ,[CATEGORY]
+        ,[CLASSIFICATION]
+        )
+        VALUES
+        (#{c.batchCode, jdbcType=VARCHAR}
+        ,#{c.callerId, jdbcType=VARCHAR}
+        ,#{c.memberCode, jdbcType=VARCHAR}
+        ,#{c.type, jdbcType=INTEGER}
+        ,#{c.room, jdbcType=VARCHAR}
+        ,#{c.dateAdmitted, jdbcType=TIMESTAMP}
+        ,#{c.diagnosis, jdbcType=VARCHAR}
+        ,#{c.procedureDesc, jdbcType=VARCHAR}
+        ,#{c.procedureAmount, jdbcType=NUMERIC}
+        ,#{c.runningBill, jdbcType=NUMERIC}
+        ,#{c.actionTaken, jdbcType=INTEGER}
+        ,#{c.approvalNo, jdbcType=VARCHAR}
+        ,#{c.remarks, jdbcType=VARCHAR}
+        ,#{c.primaryComplaint, jdbcType=VARCHAR}
+        ,#{c.reason, jdbcType=VARCHAR}
+        ,#{c.updatedBy, jdbcType=VARCHAR}
+        ,#{c.updatedDate, jdbcType=TIMESTAMP}
+        ,#{c.memLname, jdbcType=VARCHAR}
+        ,#{c.memFname, jdbcType=VARCHAR}
+        ,#{c.memMi, jdbcType=VARCHAR}
+        ,#{c.memCompany, jdbcType=VARCHAR}
+        ,#{c.category, jdbcType=VARCHAR}
+        ,#{c.classification, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="saveTransactionCustomerCarePhysician" parameterType="com.basicauth.data.CustomerCare" flushCache="true">
+        INSERT INTO [SYS_CUST_CARE_PF_MTBL]
+        ([PF_CODE]
+        ,[BATCH_CODE]
+        ,[DOCTOR]
+        ,[SPECIALIZATION]
+        ,[ACCREDITED]
+        )
+        VALUES
+        (#{c.doctorCode, jdbcType=VARCHAR}
+        ,#{c.batchCode, jdbcType=VARCHAR}
+        ,#{c.doctorName, jdbcType=VARCHAR}
+        ,#{c.specialization, jdbcType=VARCHAR}
+        ,#{c.accredited, jdbcType=INTEGER}
+
+        )
+    </insert>
+
+    <update id="cancelLTBLByBatchCode" flushCache="true">
+        UPDATE [SYS_CUST_CARE_LTBL]
+        SET REMARKS = #{user},
+        UPDATED_DATE = GETDATE(),
+        UPDATED_BY = #{updatedBy},
+        ACTION_TAKEN = 4
+        WHERE BATCH_CODE = #{batchCode}
+    </update>
+
+    <select id="callHistoryLog" statementType="CALLABLE">
+        {CALL [mace_insert_cust_entry_details](
+        #{batchCode, mode=IN, jdbcType=VARCHAR},
+        #{notes, mode=IN, jdbcType=VARCHAR},
+        #{updatedBy, mode=IN, jdbcType=VARCHAR},
+        #{type, mode=IN, jdbcType=INTEGER}
+        )}
+    </select>
+</mapper>

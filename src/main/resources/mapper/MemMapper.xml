@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basicauth.mapper.MemMapper">
+
+	<select id="getRoomCategories" resultType="String">
+		SELECT DISTINCT PLAN_DESC FROM SYS_PLANS_LTBL
+	</select>
+
+	<resultMap id="AccountsMap" type="com.basicauth.data.AccountsEntity">
+		<result column="ACCOUNT_CODE" property="accountCode" jdbcType="VARCHAR" />
+		<result column="ACCOUNT_NAME" property="accountName" jdbcType="VARCHAR" />
+		<result column="PROPOSAL_NAME" property="proposalName" jdbcType="VARCHAR" />
+		<result column="EFF_DATE" property="effDate" jdbcType="VARCHAR" />
+		<result column="AGENT_CODE" property="agentCode" jdbcType="VARCHAR" />
+		<result column="SERIAL_NO" property="serialNo" jdbcType="VARCHAR" />
+		<result column="ACCTTYPE_CODE" property="accountCode" jdbcType="VARCHAR" />
+		<result column="BRANCHES" property="branches" jdbcType="VARCHAR" />
+		<result column="MEMBERSHIP_CODE" property="membershipCode" jdbcType="VARCHAR" />
+		<result column="ACCTSTATUS_CODE" property="acctStatusCode" jdbcType="VARCHAR" />
+		<result column="MEMSIZE_CODE" property="memSizeCode" jdbcType="VARCHAR" />
+		<result column="PACKAGE_CODE" property="packageCode" jdbcType="VARCHAR" />
+		<result column="SETUP_CODE" property="setupCode" jdbcType="VARCHAR" />
+		<result column="STREET" property="street" jdbcType="VARCHAR" />
+		<result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
+		<result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
+		<result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR" />
+		<result column="FAX_NO" property="faxNo" jdbcType="VARCHAR" />
+		<result column="CONTACT_SALUTATION" property="contactSalutation" jdbcType="VARCHAR" />
+		<result column="CONTACT_FNAME" property="contactFname" jdbcType="VARCHAR" />
+		<result column="CONTACT_LNAME" property="contactLname" jdbcType="VARCHAR" />
+		<result column="CONTACT_MNAME" property="contactMname" jdbcType="VARCHAR" />
+		<result column="CONTACT_POSITION" property="contactPos" jdbcType="VARCHAR" />
+		<result column="FRANCHISE_DATE" property="franchiseDate" jdbcType="VARCHAR" />
+		<result column="FRANCHISE_EXPIRY" property="franchiseExpiry" jdbcType="VARCHAR" />
+		<result column="EXTEND60" property="extend60" jdbcType="VARCHAR" />
+		<result column="EXTEND150" property="extend150" jdbcType="VARCHAR" />
+		<result column="INDUSTRY_CODE" property="industryCode" jdbcType="VARCHAR" />
+		<result column="MINDUSTRY_CODE" property="mindustryCode" jdbcType="VARCHAR" />
+		<result column="OLD_HMO_CODE" property="oldHmoCode" jdbcType="VARCHAR" />
+		<result column="OLD_HMO_EXPIRY" property="oldHmoExpiry" jdbcType="VARCHAR" />
+		<result column="ADD_SALUTATION" property="addSalutation" jdbcType="VARCHAR" />
+		<result column="ADDRESSEE_FNAME" property="addresseeFname" jdbcType="VARCHAR" />
+		<result column="ADDRESSEE_MNAME" property="addresseeMname" jdbcType="VARCHAR" />
+		<result column="ADDRESSEE_LNAME" property="addresseeLname" jdbcType="VARCHAR" />
+		<result column="ADDRESSEE_POSITION" property="addresseePos" jdbcType="VARCHAR" />
+		<result column="REQUIRE_REMARKS" property="requireRemarks" jdbcType="VARCHAR" />
+		<result column="WITH_RC" property="withRc" jdbcType="VARCHAR" />
+		<result column="WITH_MASTERLIST" property="withMasterlist" jdbcType="VARCHAR" />
+		<result column="SUBMIT_DATE_ML" property="submitDate" jdbcType="VARCHAR" />
+		<result column="WITH_SURVEY_FORM" property="withSurveyForm" jdbcType="VARCHAR" />
+		<result column="SUBMIT_DATE_SF" property="submitDateSf" jdbcType="VARCHAR" />
+		<result column="EXTENDED_FROM" property="extendedFrom" jdbcType="VARCHAR" />
+		<result column="EXTENDED_TO" property="extendedTo" jdbcType="VARCHAR" />
+		<result column="PROGRESS_REM" property="progressRem" jdbcType="VARCHAR" />
+		<result column="DATE_CLOSED" property="dateClosed" jdbcType="VARCHAR" />
+		<result column="WITH_PROPOSAL" property="withProposal" jdbcType="VARCHAR" />
+		<result column="UPDATED_DATE" property="updatedDate" jdbcType="VARCHAR" />
+		<result column="UPDATED_BY" property="updatedBy" jdbcType="VARCHAR" />
+		<result column="SOB_APPROVED" property="sobApproved" jdbcType="VARCHAR" />
+		<result column="MOTHER_CODE" property="motherCode" jdbcType="VARCHAR" />
+		<result column="MOTHER_STATUS" property="motherStatus" jdbcType="VARCHAR" />
+		<result column="PROPOSAL_TYPE" property="proposalType" jdbcType="VARCHAR" />
+		<result column="ACCT_CATEGORY" property="acctCategory" jdbcType="VARCHAR" />
+		<result column="AGENT_REASON" property="agentReason" jdbcType="VARCHAR" />
+		<result column="ACCOUNT_DISPLAY" property="accountDisplay" jdbcType="VARCHAR" />
+		<result column="SPLCASEID" property="splCaseId" jdbcType="VARCHAR" />
+		<result column="ID_TYPE" property="idType" jdbcType="VARCHAR" />
+		<result column="TRANSMITTAL_TYPE" property="transmittalType" jdbcType="VARCHAR" />
+		<result column="BILLING_CTR_MO" property="billingCtrMo" jdbcType="VARCHAR" />
+		<result column="BILLING_CTR_QTR" property="billingCtrQtr" jdbcType="VARCHAR" />
+		<result column="BILLING_CTR_SA" property="billingCtrSa" jdbcType="VARCHAR" />
+		<result column="BILLING_CTR_AN" property="billingCtrAn" jdbcType="VARCHAR" />
+		<result column="Other_Remarks" property="otherRemarks" jdbcType="VARCHAR" />
+		<result column="GRACE_PERIOD" property="gracePeriod" jdbcType="VARCHAR" />
+		<result column="GROUP_TOP" property="groupTop" jdbcType="VARCHAR" />
+		<result column="TAG_TOP" property="tagTop" jdbcType="VARCHAR" />
+		<result column="DATE_VALIDITY" property="dateValidity" jdbcType="VARCHAR" />
+		<result column="ENCODE_TYPE" property="encodeType" jdbcType="VARCHAR" />
+		<result column="TAG" property="tag" jdbcType="VARCHAR" />
+		<result column="FOR_RENEWAL" property="forRenewal" jdbcType="VARCHAR" />
+		<result column="REN_UPDATE_DATE" property="renUpdateDate" jdbcType="VARCHAR" />
+		<result column="LOGIN" property="login" jdbcType="VARCHAR" />
+		<result column="USER_ASSIGN" property="userAssign" jdbcType="VARCHAR" />
+		<result column="TIN_NO" property="tinNo" jdbcType="VARCHAR" />
+		<result column="FROM_INTRA" property="fromIntra" jdbcType="VARCHAR" />
+		<result column="WITH_RSP" property="withRsp" jdbcType="VARCHAR" />
+		<result column="VATTYPEID" property="vatTypeId" jdbcType="VARCHAR" />
+		<result column="rowguid" property="rowGuiId" jdbcType="VARCHAR" />
+		<result column="LAST_COVERED_DATE" property="lastCoveredDate" jdbcType="VARCHAR" />
+		<result column="EMAIL_ADD_1" property="emailAdd1" jdbcType="VARCHAR" />
+		<result column="EMAIL_ADD_2" property="emailAdd2" jdbcType="VARCHAR" />
+		<result column="corr_days" property="corrDays" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getAllAccounts" resultMap="AccountsMap" resultType="java.util.Map">
+		SELECT TOP 5 * FROM SYS_ACCOUNT_MTBL
+	</select>
+
+    <select id="getAll" resultType="java.util.Map">
+      SELECT
+	ACCOUNT_CODE,
+	ACCOUNT_NAME,
+	PROPOSAL_NAME,
+	EFF_DATE,
+	AGENT_CODE,
+	SERIAL_NO,
+	ACCTTYPE_CODE,
+	BRANCHES,
+	MEMBERSHIP_CODE,
+	ACCTSTATUS_CODE,
+	MEMSIZE_CODE,
+	PACKAGE_CODE,
+SETUP_CODE,
+	STREET,
+	CITY_CODE,
+	PROVINCE_CODE,
+	PHONE_NO,
+	FAX_NO,
+	CONTACT_SALUTATION,
+	CONTACT_FNAME,
+	CONTACT_LNAME,
+	CONTACT_MNAME,
+	CONTACT_POSITION,
+	FRANCHISE_DATE,
+	FRANCHISE_EXPIRY,
+	EXTEND60,
+	EXTEND150,
+	INDUSTRY_CODE,
+	MINDUSTRY_CODE,
+	OLD_HMO_CODE,
+	OLD_HMO_EXPIRY,
+	ADD_SALUTATION,
+	ADDRESSEE_FNAME,
+	ADDRESSEE_MNAME,
+	ADDRESSEE_LNAME,
+	ADDRESSEE_POSITION,
+	REQUIRE_REMARKS,
+	WITH_RC,
+	WITH_MASTERLIST,
+	SUBMIT_DATE_ML,
+	WITH_SURVEY_FORM,
+	SUBMIT_DATE_SF,
+	EXTENDED_FROM,
+	EXTENDED_TO,
+	PROGRESS_REM,
+	DATE_CLOSED,
+	WITH_PROPOSAL,
+	UPDATED_DATE,
+	UPDATED_BY,
+	SOB_APPROVED,
+	MOTHER_CODE,
+	MOTHER_STATUS,
+	PROPOSAL_TYPE,
+	ACCT_CATEGORY,
+	AGENT_REASON,
+	ACCOUNT_DISPLAY,
+	SPLCASEID,
+	ID_TYPE,
+	TRANSMITTAL_TYPE,
+	BILLING_CTR_MO,
+	BILLING_CTR_QTR,
+	BILLING_CTR_SA,
+	BILLING_CTR_AN,
+	Other_Remarks,
+	GRACE_PERIOD,
+	GROUP_TOP,
+	TAG_TOP,
+	DATE_VALIDITY,
+	ENCODE_TYPE,
+	TAG,
+	FOR_RENEWAL,
+	REN_UPDATE_DATE,
+	LOGIN,
+	USER_ASSIGN,
+	TIN_NO,
+	FROM_INTRA,
+	WITH_RSP,
+	VATTYPEID,
+	rowguid,
+	LAST_COVERED_DATE,
+	EMAIL_ADD_1,
+	EMAIL_ADD_2,
+	corr_days
+FROM
+			SYS_ACCOUNT_MTBL
+    </select>
+
+	<select id="getAge" resultType="int" >
+		SELECT [dbo].[ufn_GetAge] (#{birthDate})
+	</select>
+
+	<select id="getMemDetails" resultType="HashMap" statementType="CALLABLE">
+		{CALL [EMEDICARD_MEMDETAILS_V2]( #{@MemCode, mode=IN, jdbcType=VARCHAR } )   }
+	</select>
+
+	<!--<select id="getDependents"  resultType="java.util.List">-->
+	<select id="getDependents"  resultMap="DependentMemberResultMap"  resultType="java.util.List">
+		select
+		<include refid="Dependent_Member_Column_List"/>
+		FROM
+		sys_uwdependent_active_mtbl
+		LEFT JOIN sys_account_mtbl ON sys_account_mtbl.account_code=sys_uwdependent_active_mtbl.account_code
+		LEFT JOIN sys_roomrate_mtbl ON sys_roomrate_mtbl.rsproomrate_id=sys_uwdependent_active_mtbl.rsproomrate_id
+		LEFT JOIN sys_plan_ltbl ON sys_plan_ltbl.plan_code=sys_roomrate_mtbl.plan_code
+		WHERE sys_uwdependent_active_mtbl.PRIN_CODE = #{memberCode, jdbcType=VARCHAR}
+		AND sys_uwdependent_active_mtbl.dep_code IS NOT NULL
+	</select>
+
+	<!-- Member -->
+	<resultMap id="PrincipalMemberResultMap" type="com.basicauth.domain.Member">
+		<result column="prin_code" property="code" jdbcType="VARCHAR"/>
+		<result column="mem_lname" property="lastname" jdbcType="VARCHAR"/>
+		<result column="mem_fname" property="firstname" jdbcType="VARCHAR"/>
+		<result column="mem_mi" property="mi" jdbcType="VARCHAR"/>
+		<result column="mem_sex" property="gender" jdbcType="INTEGER"/>
+		<result column="eff_date" property="effectDate" jdbcType="DATE"/>
+		<result column="val_date" property="validDate" jdbcType="DATE"/>
+		<result column="account_code" property="companyCode" jdbcType="VARCHAR"/>
+		<result column="account_name" property="companyDesc" jdbcType="VARCHAR"/>
+		<result column="plan_code" property="planCode" jdbcType="VARCHAR"/>
+		<result column="plan_desc" property="planDesc" jdbcType="VARCHAR"/>
+		<result column="rsproomrate_id" property="roomRateId" jdbcType="INTEGER"/>
+		<result column="mem_bday" property="birthDate" jdbcType="DATE"/>
+		<result column="stat_rem" property="statRemarks" jdbcType="VARCHAR"/>
+		<result column="other_rem" property="otherRemarks" jdbcType="VARCHAR"/>
+		<result column="id_rem" property="remarks1" jdbcType="VARCHAR"/>
+		<result column="id_rem2" property="remarks2" jdbcType="VARCHAR"/>
+		<result column="id_rem3" property="remarks3" jdbcType="VARCHAR"/>
+		<result column="id_rem4" property="remarks4" jdbcType="VARCHAR"/>
+		<result column="id_rem5" property="remarks5" jdbcType="VARCHAR"/>
+		<result column="id_rem6" property="remarks6" jdbcType="VARCHAR"/>
+		<result column="id_rem7" property="remarks7" jdbcType="VARCHAR"/>
+		<result column="mem_type" property="memberType" jdbcType="INTEGER"/>
+		<result column="updated_date" property="updateDate" jdbcType="DATE"/>
+		<result column="isprincipal" property="isPrincipal" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<sql id="Principal_Member_Column_List">
+		sys_uwprincipal_active_mtbl.prin_code,
+		sys_uwprincipal_active_mtbl.mem_lname,
+		sys_uwprincipal_active_mtbl.mem_fname,
+		sys_uwprincipal_active_mtbl.mem_mi,
+		sys_uwprincipal_active_mtbl.mem_sex,
+		sys_uwprincipal_active_mtbl.eff_date,
+		sys_uwprincipal_active_mtbl.val_date,
+		sys_uwprincipal_active_mtbl.account_code,
+		sys_account_mtbl.account_name,
+		sys_roomrate_mtbl.plan_code,
+		sys_plan_ltbl.plan_desc,
+		sys_uwprincipal_active_mtbl.rsproomrate_id,
+		sys_uwprincipal_active_mtbl.mem_bday,
+		sys_uwprincipal_active_mtbl.stat_rem,
+		sys_uwprincipal_active_mtbl.other_rem,
+		sys_uwprincipal_active_mtbl.id_rem,
+		sys_uwprincipal_active_mtbl.id_rem2,
+		sys_uwprincipal_active_mtbl.id_rem3,
+		sys_uwprincipal_active_mtbl.id_rem4,
+		sys_uwprincipal_active_mtbl.id_rem5,
+		sys_uwprincipal_active_mtbl.id_rem6,
+		sys_uwprincipal_active_mtbl.id_rem7,
+		sys_uwprincipal_active_mtbl.mem_type,
+		sys_uwprincipal_active_mtbl.updated_date,
+		1 AS isprincipal
+	</sql>
+
+	<select id="getMemberPrincipal" resultMap="PrincipalMemberResultMap">
+		select
+		<include refid="Principal_Member_Column_List"/>
+		FROM
+		sys_uwprincipal_active_mtbl
+		LEFT JOIN sys_account_mtbl ON sys_account_mtbl.account_code=sys_uwprincipal_active_mtbl.account_code
+		LEFT JOIN sys_roomrate_mtbl ON sys_roomrate_mtbl.rsproomrate_id=sys_uwprincipal_active_mtbl.rsproomrate_id
+		LEFT JOIN sys_plan_ltbl ON sys_plan_ltbl.plan_code=sys_roomrate_mtbl.plan_code
+
+		WHERE
+		LTRIM(RTRIM(sys_uwprincipal_active_mtbl.prin_code))= #{memberNumber}
+		AND sys_uwprincipal_active_mtbl.prin_code IS NOT NULL
+	</select>
+
+	<resultMap id="DependentMemberResultMap" type="com.basicauth.domain.Member">
+		<result column="dep_code" property="code" jdbcType="VARCHAR"/>
+		<result column="mem_lname" property="lastname" jdbcType="VARCHAR"/>
+		<result column="mem_fname" property="firstname" jdbcType="VARCHAR"/>
+		<result column="mem_mi" property="mi" jdbcType="VARCHAR"/>
+		<result column="mem_sex" property="gender" jdbcType="INTEGER"/>
+		<result column="eff_date" property="effectDate" jdbcType="DATE"/>
+		<result column="val_date" property="validDate" jdbcType="DATE"/>
+		<result column="account_code" property="companyCode" jdbcType="VARCHAR"/>
+		<result column="account_name" property="companyDesc" jdbcType="VARCHAR"/>
+		<result column="plan_code" property="planCode" jdbcType="VARCHAR"/>
+		<result column="plan_desc" property="planDesc" jdbcType="VARCHAR"/>
+		<result column="rsproomrate_id" property="roomRateId" jdbcType="INTEGER"/>
+		<result column="mem_bday" property="birthDate" jdbcType="DATE"/>
+		<result column="stat_rem" property="statRemarks" jdbcType="VARCHAR"/>
+		<result column="other_rem" property="otherRemarks" jdbcType="VARCHAR"/>
+		<result column="id_rem" property="remarks1" jdbcType="VARCHAR"/>
+		<result column="id_rem2" property="remarks2" jdbcType="VARCHAR"/>
+		<result column="id_rem3" property="remarks3" jdbcType="VARCHAR"/>
+		<result column="id_rem4" property="remarks4" jdbcType="VARCHAR"/>
+		<result column="id_rem5" property="remarks5" jdbcType="VARCHAR"/>
+		<result column="id_rem6" property="remarks6" jdbcType="VARCHAR"/>
+		<result column="id_rem7" property="remarks7" jdbcType="VARCHAR"/>
+		<result column="mem_type" property="memberType" jdbcType="VARCHAR"/>
+		<result column="updated_date" property="updateDate" jdbcType="DATE"/>
+		<result column="isprincipal" property="isPrincipal" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<sql id="Dependent_Member_Column_List">
+		sys_uwdependent_active_mtbl.dep_code,
+		sys_uwdependent_active_mtbl.mem_lname,
+		sys_uwdependent_active_mtbl.mem_fname,
+		sys_uwdependent_active_mtbl.mem_mi,
+		sys_uwdependent_active_mtbl.mem_sex,
+		sys_uwdependent_active_mtbl.eff_date,
+		sys_uwdependent_active_mtbl.val_date,
+		sys_uwdependent_active_mtbl.account_code,
+		sys_account_mtbl.account_name,
+		sys_roomrate_mtbl.plan_code,
+		sys_plan_ltbl.plan_desc,
+		sys_uwdependent_active_mtbl.rsproomrate_id,
+		sys_uwdependent_active_mtbl.mem_bday,
+		sys_uwdependent_active_mtbl.stat_rem,
+		sys_uwdependent_active_mtbl.other_rem,
+		sys_uwdependent_active_mtbl.id_rem,
+		sys_uwdependent_active_mtbl.id_rem2,
+		sys_uwdependent_active_mtbl.id_rem3,
+		sys_uwdependent_active_mtbl.id_rem4,
+		sys_uwdependent_active_mtbl.id_rem5,
+		sys_uwdependent_active_mtbl.id_rem6,
+		sys_uwdependent_active_mtbl.id_rem7,
+		sys_uwdependent_active_mtbl.mem_type,
+		sys_uwdependent_active_mtbl.updated_date,
+		0 AS isprincipal
+	</sql>
+
+	<select id="getMemberDependent" resultMap="DependentMemberResultMap">
+		select
+		<include refid="Dependent_Member_Column_List"/>
+		FROM
+		sys_uwdependent_active_mtbl
+		LEFT JOIN sys_account_mtbl ON sys_account_mtbl.account_code=sys_uwdependent_active_mtbl.account_code
+		LEFT JOIN sys_roomrate_mtbl ON sys_roomrate_mtbl.rsproomrate_id=sys_uwdependent_active_mtbl.rsproomrate_id
+		LEFT JOIN sys_plan_ltbl ON sys_plan_ltbl.plan_code=sys_roomrate_mtbl.plan_code
+		WHERE
+		LTRIM(RTRIM(sys_uwdependent_active_mtbl.dep_code))=#{memberNumber}
+		AND sys_uwdependent_active_mtbl.dep_code IS NOT NULL
+	</select>
+
+	<select id="getMember" resultMap="memberDetailsMap">
+		--Extracted query of the EMEDICARD_MEMDETAILS_V2 SP
+        Select
+        PRIN_CODE,
+        MEM_LNAME + ', ' + MEM_FNAME  as MEM_NAME,
+        CONVERT(CHAR(12), A.MEM_BDAY, 107) as BDAY,
+
+        CASE
+        WHEN LEN(A.MEM_BDAY) != 0
+        THEN dbo.ufn_GetAge(A.MEM_BDAY)
+        ELSE NULL
+        END as AGE,
+        O.MEMCSTAT_DESC as CIVIL_STATUS,
+        MEM_SEX,
+        B.ACCOUNT_NAME,
+        CONVERT(CHAR(12), A.EFF_DATE,107) as EFF_DATE,
+        CONVERT(CHAR(12), A.VAL_DATE,107) as VAL_DATE,
+        D.Plan_Desc,
+        C.DD_Reg_Limits,
+        C.ERC_Limits,
+        A.ID_REM,
+        A.ID_REM2,
+        A.ID_REM3,
+        A.ID_REM4,
+        A.ID_REM5,
+        A.ID_REM6,
+        A.ID_REM7,
+        A.OTHER_REM,
+        case
+        when Mem_OStat_Code = 0 then 'ACTIVE'
+        when Mem_OStat_Code = 1 then 'DISAPPROVED'
+        when Mem_OStat_Code = 2 then 'FOR ENCODING'
+        when Mem_OStat_Code = 3 then 'MEDICAL EVALUATION'
+        when Mem_OStat_Code = 4 then 'ON HOLD'
+        when Mem_OStat_Code = 5 then 'FOR APPROVAL'
+        when Mem_OStat_Code = 9 then 'RESIGNED'
+        when Mem_OStat_Code = 15 then 'CANCELLED'
+        when Mem_OStat_Code = 16 then 'PENDING (E-MEDICARD)'
+        when Mem_OStat_Code = 17 then 'LAPSE (NON RENEW)'
+        when Mem_OStat_Code = 18 then 'FOR REACTIVATION'
+        when Mem_OStat_Code = 20 then 'VERIFY PAYMENT WITH RMD'
+        when Mem_OStat_Code = 21 then 'VERIFY RENEWAL FROM MARKETING / SALES'
+        when Mem_OStat_Code = 22 then 'VERIFY MEMBERSHIP'
+        END as [Mem_OStat_Code]
+        ,
+        case
+        when A.MEM_TYPE = 0 then 'PRINCIPAL'
+        when A.MEM_TYPE = 1 then 'QUALIFIED DEPENDENT'
+        when A.MEM_TYPE = 2 then 'EXTENDED DEPENDENT'
+        end as [MEM_TYPE],
+
+        A.ACCOUNT_CODE,
+        E.ACCT_TYPE,
+        A.MEM_LNAME,
+        A.MEM_FNAME,
+        A.RSPROOMRATE_ID
+
+        from  SYS_UWPRINCIPAL_ACTIVE_MTBL A
+
+        INNER JOIN SYS_ACCOUNT_MTBL B ON A.ACCOUNT_CODE = B.ACCOUNT_CODE
+        LEFT OUTER JOIN SYS_UWMEMBER_CSTATUS_LTBL O ON A.MEM_CIVILSTAT = O.MEMCSTAT_ID
+        LEFT JOIN SYS_ROOMRATE_MTBL C ON A.RSPROOMRATE_ID = C.RSPROOMRATE_ID
+        LEFT JOIN SYS_PLAN_LTBL D ON C.PLAN_CODE = D.PLAN_CODE
+        LEFT JOIN SYS_ACCTTYPE_LTBL E ON E.ACCTTYPE_CODE = B.ACCTTYPE_CODE
+        Where
+        A.PRIN_CODE = #{memCode}
+
+        UNION
+
+        Select
+        DEP_CODE PRIN_CODE,
+        MEM_LNAME + ', ' + MEM_FNAME + ' ' + MEM_MI  as MEM_NAME,
+        [BDAY] = CONVERT(CHAR(12), A.MEM_BDAY, 107),
+        [AGE] =
+        convert(decimal(8,2),CASE
+        WHEN LEN(A.MEM_BDAY) != 0
+        THEN dbo.ufn_GetAge(A.MEM_BDAY)
+        ELSE NULL
+        END),
+        O.MEMCSTAT_DESC as CIVIL_STATUS,
+        MEM_SEX,
+        B.ACCOUNT_NAME,
+        EFF_DATE = CONVERT(CHAR(12), A.EFF_DATE,107),
+        VAL_DATE = CONVERT(CHAR(12), A.VAL_DATE,107),
+        D.Plan_Desc,
+        C.DD_Reg_Limits,
+        C.ERC_Limits,
+        A.ID_REM,
+        A.ID_REM2,
+        A.ID_REM3,
+        A.ID_REM4,
+        A.ID_REM5,
+        A.ID_REM6,
+        A.ID_REM7,
+        A.OTHER_REM,
+        case
+        when Mem_OStat_Code = 0 then 'ACTIVE'
+        when Mem_OStat_Code = 1 then 'DISAPPROVED'
+        when Mem_OStat_Code = 2 then 'FOR ENCODING'
+        when Mem_OStat_Code = 3 then 'MEDICAL EVALUATION'
+        when Mem_OStat_Code = 4 then 'ON HOLD'
+        when Mem_OStat_Code = 5 then 'FOR APPROVAL'
+        when Mem_OStat_Code = 9 then 'RESIGNED'
+        when Mem_OStat_Code = 15 then 'CANCELLED'
+        when Mem_OStat_Code = 16 then 'PENDING (E-MEDICARD)'
+        when Mem_OStat_Code = 17 then 'LAPSE (NON RENEW)'
+        when Mem_OStat_Code = 18 then 'FOR REACTIVATION'
+        when Mem_OStat_Code = 20 then 'VERIFY PAYMENT WITH RMD'
+        when Mem_OStat_Code = 21 then 'VERIFY RENEWAL FROM MARKETING / SALES'
+        when Mem_OStat_Code = 22 then 'VERIFY MEMBERSHIP'
+        END as [Mem_OStat_Code]
+        ,
+        case
+        when A.MEM_TYPE = 0 then 'PRINCIPAL'
+        when A.MEM_TYPE = 1 then 'QUALIFIED DEPENDENT'
+        when A.MEM_TYPE = 2 then 'EXTENDED DEPENDENT'
+        end as [MEM_TYPE],
+        A.ACCOUNT_CODE,
+        E.ACCT_TYPE,
+        A.MEM_LNAME,
+        A.MEM_FNAME,
+        A.RSPROOMRATE_ID
+
+        from  SYS_UWDEPENDENT_ACTIVE_MTBL A
+
+        INNER JOIN SYS_ACCOUNT_MTBL B ON A.ACCOUNT_CODE = B.ACCOUNT_CODE
+        LEFT OUTER JOIN SYS_UWMEMBER_CSTATUS_LTBL O ON A.MEM_CIVILSTAT = O.MEMCSTAT_ID
+        LEFT JOIN SYS_ROOMRATE_MTBL C ON A.RSPROOMRATE_ID = C.RSPROOMRATE_ID
+        LEFT JOIN SYS_PLAN_LTBL D ON C.PLAN_CODE = D.PLAN_CODE
+        LEFT JOIN SYS_ACCTTYPE_LTBL E ON E.ACCTTYPE_CODE = B.ACCTTYPE_CODE
+        Where
+        A.DEP_CODE = #{memCode}
+	</select>
+
+	<resultMap id="memberDetailsMap" type="com.basicauth.data.MemberDetails">
+		<result column="ACCOUNT_CODE" property="ACCOUNT_CODE" jdbcType="VARCHAR"/>
+		<result column="ACCOUNT_NAME" property="ACCOUNT_NAME" jdbcType="VARCHAR"/>
+		<result column="ACCT_TYPE" property="ACCT_TYPE" jdbcType="VARCHAR"/>
+		<result column="AGE" property="AGE" jdbcType="INTEGER"/>
+		<result column="BDAY" property="BDAY" jdbcType="VARCHAR"/>
+		<result column="CIVIL_STATUS" property="CIVIL_STATUS" jdbcType="VARCHAR"/>
+		<result column="DD_Reg_Limits" property="DD_Reg_Limits" jdbcType="NUMERIC"/>
+		<result column="EFF_DATE" property="EFF_DATE" jdbcType="VARCHAR"/>
+		<result column="ERC_Limits" property="ERC_Limits" jdbcType="NUMERIC"/>
+		<result column="ID_REM" property="ID_REM" jdbcType="VARCHAR"/>
+		<result column="ID_REM2" property="ID_REM2" jdbcType="VARCHAR"/>
+		<result column="ID_REM3" property="ID_REM3" jdbcType="VARCHAR"/>
+		<result column="ID_REM4" property="ID_REM4" jdbcType="VARCHAR"/>
+		<result column="ID_REM5" property="ID_REM5" jdbcType="VARCHAR"/>
+		<result column="ID_REM6" property="ID_REM6" jdbcType="VARCHAR"/>
+		<result column="ID_REM7" property="ID_REM7" jdbcType="VARCHAR"/>
+		<result column="MEM_FNAME" property="MEM_FNAME" jdbcType="VARCHAR"/>
+		<result column="MEM_LNAME" property="MEM_LNAME" jdbcType="VARCHAR"/>
+		<result column="MEM_NAME" property="MEM_NAME" jdbcType="VARCHAR"/>
+		<result column="Mem_OStat_Code" property="Mem_OStat_Code" jdbcType="VARCHAR"/>
+		<result column="MEM_SEX" property="MEM_SEX" jdbcType="BIT"/>
+		<result column="MEM_TYPE" property="MEM_TYPE" jdbcType="VARCHAR"/>
+		<result column="OTHER_REM" property="OTHER_REM" jdbcType="VARCHAR"/>
+		<result column="Plan_Desc" property="Plan_Desc" jdbcType="VARCHAR"/>
+		<result column="PRIN_CODE" property="PRIN_CODE" jdbcType="VARCHAR"/>
+		<result column="VAL_DATE" property="VAL_DATE" jdbcType="VARCHAR"/>
+        <result column="RSPROOMRATE_ID" property="RSPROOMRATE_ID" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<select id="mossConsultation" statementType="CALLABLE" resultType="java.lang.String">
+		{
+            CALL [moss_consultation](
+                #{@member_cd, mode=IN, jdbcType=VARCHAR },
+                #{@maternity_type, mode=IN, jdbcType=INTEGER },
+                #{@hosp_code, mode=IN, jdbcType=VARCHAR }
+            )
+		}
+	</select>
+    <select id="mossProcessInpx"  statementType="CALLABLE"  resultType="java.lang.Integer">
+        {
+            CALL [moss_proc_inpx](
+                #{@member_cd, mode=IN, jdbcType=VARCHAR },
+                #{@hosp_code, mode=IN, jdbcType=VARCHAR }
+            )
+		}
+    </select>
+	<select id="mossInPatient"  statementType="CALLABLE"  resultType="java.lang.Integer">
+		{
+			CALL [moss_in_patient](
+				#{@member_cd, mode=IN, jdbcType=VARCHAR },
+				#{@hosp_code, mode=IN, jdbcType=VARCHAR }
+			)
+		}
+	</select>
+	<select id="mossPeclDdl" resultType="java.lang.Integer">
+		{
+            CALL [moss_pecl_ddl](
+                #{@member_cd, mode=IN, jdbcType=VARCHAR }
+            )
+		}
+
+	</select>
+
+	<select id="checkIfDependent" resultType="java.lang.Boolean">
+		SELECT CAST(
+		CASE WHEN EXISTS(
+		SELECT 1 FROM sys_uwdependent_active_mtbl WHERE dep_code= #{depMemberCode}  COLLATE SQL_Latin1_General_CP1_CS_AS
+		AND PRIN_CODE= #{prin_code}
+		) THEN 1
+		ELSE 0
+		END
+		AS BIT)
+	</select>
+	<select id="hasInPatientAccess" resultType="java.lang.Boolean">
+		SELECT CAST(
+		CASE WHEN EXISTS(
+		SELECT * FROM sobm_notcoveredhosp_ip_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+			AND ltrim(rtrim(hospitalcode)) = ltrim(rtrim(#{hospitalCode})) COLLATE SQL_Latin1_General_CP1_CS_AS
+		) THEN 0
+		ELSE 1
+		END
+		AS BIT)
+	</select>
+	<select id="hasOutPatientAccess" resultType="java.lang.Boolean">
+		SELECT CAST(
+		CASE WHEN EXISTS(
+		SELECT * FROM sobm_notcoveredhosp_op_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+			AND ltrim(rtrim(hospitalcode)) = ltrim(rtrim(#{hospitalCode})) COLLATE SQL_Latin1_General_CP1_CS_AS
+		) THEN 0
+		ELSE 1
+		END
+		AS BIT)
+	</select>
+
+	<!-- Member -->
+	<resultMap id="MemberResultMap" type="com.basicauth.domain.Member" >
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="mem_lname" property="lastname" jdbcType="VARCHAR" />
+		<result column="mem_fname" property="firstname" jdbcType="VARCHAR" />
+		<result column="mem_mi" property="mi" jdbcType="VARCHAR" />
+		<result column="mem_sex" property="gender" jdbcType="INTEGER" />
+		<result column="eff_date" property="effectDate" jdbcType="DATE" />
+		<result column="val_date" property="validDate" jdbcType="DATE" />
+		<result column="account_code" property="companyCode" jdbcType="VARCHAR" />
+		<result column="account_name" property="companyDesc" jdbcType="VARCHAR" />
+		<result column="plan_code" property="planCode" jdbcType="VARCHAR" />
+		<result column="plan_desc" property="planDesc" jdbcType="VARCHAR" />
+		<result column="rsproomrate_id" property="roomRateId" jdbcType="INTEGER" />
+		<result column="mem_bday" property="birthDate" jdbcType="DATE" />
+		<result column="stat_rem" property="statRemarks" jdbcType="VARCHAR" />
+		<result column="other_rem" property="otherRemarks" jdbcType="VARCHAR" />
+		<result column="id_rem" property="remarks1" jdbcType="VARCHAR" />
+		<result column="id_rem2" property="remarks2" jdbcType="VARCHAR" />
+		<result column="id_rem3" property="remarks3" jdbcType="VARCHAR" />
+		<result column="id_rem4" property="remarks4" jdbcType="VARCHAR" />
+		<result column="id_rem5" property="remarks5" jdbcType="VARCHAR" />
+		<result column="id_rem6" property="remarks6" jdbcType="VARCHAR" />
+		<result column="id_rem7" property="remarks7" jdbcType="VARCHAR" />
+		<result column="mem_type" property="memberType" jdbcType="INTEGER" />
+		<result column="updated_date" property="updateDate" jdbcType="DATE" />
+		<result column="isprincipal" property="isPrincipal" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getMemberSelect" resultMap="MemberResultMap">
+		select
+		sys_uwprincipal_active_mtbl.prin_code as CODE,
+		sys_uwprincipal_active_mtbl.mem_lname,
+		sys_uwprincipal_active_mtbl.mem_fname,
+		sys_uwprincipal_active_mtbl.mem_mi,
+		sys_uwprincipal_active_mtbl.mem_sex,
+		sys_uwprincipal_active_mtbl.eff_date,
+		sys_uwprincipal_active_mtbl.val_date,
+		sys_uwprincipal_active_mtbl.account_code,
+		sys_account_mtbl.account_name,
+		sys_roomrate_mtbl.plan_code,
+		sys_plan_ltbl.plan_desc,
+		sys_uwprincipal_active_mtbl.rsproomrate_id,
+		sys_uwprincipal_active_mtbl.mem_bday,
+		sys_uwprincipal_active_mtbl.stat_rem,
+		sys_uwprincipal_active_mtbl.other_rem,
+		sys_uwprincipal_active_mtbl.id_rem,
+		sys_uwprincipal_active_mtbl.id_rem2,
+		sys_uwprincipal_active_mtbl.id_rem3,
+		sys_uwprincipal_active_mtbl.id_rem4,
+		sys_uwprincipal_active_mtbl.id_rem5,
+		sys_uwprincipal_active_mtbl.id_rem6,
+		sys_uwprincipal_active_mtbl.id_rem7,
+		sys_uwprincipal_active_mtbl.mem_type,
+		sys_uwprincipal_active_mtbl.updated_date,
+		1 AS isprincipal
+		FROM
+		sys_uwprincipal_active_mtbl
+		LEFT JOIN sys_account_mtbl ON sys_account_mtbl.account_code=sys_uwprincipal_active_mtbl.account_code
+		LEFT JOIN sys_roomrate_mtbl ON sys_roomrate_mtbl.rsproomrate_id=sys_uwprincipal_active_mtbl.rsproomrate_id
+		LEFT JOIN sys_plan_ltbl ON sys_plan_ltbl.plan_code=sys_roomrate_mtbl.plan_code
+
+		WHERE
+		LTRIM(RTRIM(sys_uwprincipal_active_mtbl.prin_code))= #{memberNumber}
+		AND sys_uwprincipal_active_mtbl.prin_code IS NOT NULL
+
+		UNION
+
+		select
+		sys_uwdependent_active_mtbl.dep_code AS CODE,
+		sys_uwdependent_active_mtbl.mem_lname,
+		sys_uwdependent_active_mtbl.mem_fname,
+		sys_uwdependent_active_mtbl.mem_mi,
+		sys_uwdependent_active_mtbl.mem_sex,
+		sys_uwdependent_active_mtbl.eff_date,
+		sys_uwdependent_active_mtbl.val_date,
+		sys_uwdependent_active_mtbl.account_code,
+		sys_account_mtbl.account_name,
+		sys_roomrate_mtbl.plan_code,
+		sys_plan_ltbl.plan_desc,
+		sys_uwdependent_active_mtbl.rsproomrate_id,
+		sys_uwdependent_active_mtbl.mem_bday,
+		sys_uwdependent_active_mtbl.stat_rem,
+		sys_uwdependent_active_mtbl.other_rem,
+		sys_uwdependent_active_mtbl.id_rem,
+		sys_uwdependent_active_mtbl.id_rem2,
+		sys_uwdependent_active_mtbl.id_rem3,
+		sys_uwdependent_active_mtbl.id_rem4,
+		sys_uwdependent_active_mtbl.id_rem5,
+		sys_uwdependent_active_mtbl.id_rem6,
+		sys_uwdependent_active_mtbl.id_rem7,
+		sys_uwdependent_active_mtbl.mem_type,
+		sys_uwdependent_active_mtbl.updated_date,
+		0 AS isprincipal
+		FROM
+		sys_uwdependent_active_mtbl
+		LEFT JOIN sys_account_mtbl ON sys_account_mtbl.account_code=sys_uwdependent_active_mtbl.account_code
+		LEFT JOIN sys_roomrate_mtbl ON sys_roomrate_mtbl.rsproomrate_id=sys_uwdependent_active_mtbl.rsproomrate_id
+		LEFT JOIN sys_plan_ltbl ON sys_plan_ltbl.plan_code=sys_roomrate_mtbl.plan_code
+		WHERE
+		LTRIM(RTRIM(sys_uwdependent_active_mtbl.dep_code))=#{memberNumber}
+		AND sys_uwdependent_active_mtbl.dep_code IS NOT NULL
+	</select>
+	<select id="hasMaternityFromRiderCode" resultType="java.lang.Boolean">
+		SELECT CAST(
+		CASE WHEN EXISTS(
+		select ridercode from sys_uwrider_mtbl
+		WHERE ridercode=1 and membercode = #{membercode}
+		) THEN 1
+		ELSE 0
+		END
+		AS BIT)
+	</select>
+
+	<!-- Member -->
+	<resultMap id="exclusionResultMap" type="com.basicauth.domain.Exclusion" >
+		<result column="ID" property="id" jdbcType="INTEGER" />
+		<result column="AccountCode" property="accountCode" jdbcType="VARCHAR" />
+		<result column="HospitalCode" property="hospitalCode" jdbcType="VARCHAR" />
+		<result column="UpdateBy" property="updateBy" jdbcType="VARCHAR" />
+		<result column="UpdateDate" property="updateDate" jdbcType="DATE" />
+	</resultMap>
+
+	<select id="getInpatientExclusionList" resultMap="exclusionResultMap" resultType="java.util.List">
+		SELECT * FROM sobm_notcoveredhosp_ip_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+	</select>
+
+	<select id="getOutpatientExclusionList" resultMap="exclusionResultMap" resultType="java.util.List">
+		SELECT * FROM sobm_notcoveredhosp_op_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+	</select>
+
+	<resultMap id="exclusionHospitalCodeResultMap" type="com.basicauth.domain.HospitalCode" >
+		<result column="HospitalCode" property="hospitalCode" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getInpatientHospitalExclusionList" resultType="java.lang.String">
+		SELECT HospitalCode FROM sobm_notcoveredhosp_ip_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+	</select>
+	<select id="getOutpatientHospitalExclusionList"  resultType="java.lang.String">
+		SELECT HospitalCode FROM sobm_notcoveredhosp_op_d_mtbl
+		WHERE ltrim(rtrim(roomrateid)) = ltrim(rtrim(#{roomRateId})) COLLATE SQL_Latin1_General_CP1_CS_AS
+	</select>
+
+	<select id="getMemberFromUWDependent" resultType="java.util.HashMap">
+		SELECT * FROM SYS_UWDEPENDENT_ACTIVE_MTBL
+		WHERE PRIN_CODE = #{memCode}
+	</select>
+
+	<select id="getMemberFromUWPrincipal" resultType="java.util.HashMap">
+		SELECT * FROM SYS_UWPRINCIPAL_ACTIVE_MTBL
+		WHERE PRIN_CODE = #{memCode}
+	</select>
+</mapper>
